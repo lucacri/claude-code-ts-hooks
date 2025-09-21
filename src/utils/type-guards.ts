@@ -27,11 +27,11 @@ export function isValidHookInputOfType<T extends HookEventName>(
     typeof input === 'object' &&
     input !== null &&
     'hook_event_name' in input &&
-    (input as any).hook_event_name === eventName &&
+    (input as Record<string, unknown>).hook_event_name === eventName &&
     'session_id' in input &&
-    typeof (input as any).session_id === 'string' &&
+    typeof (input as Record<string, unknown>).session_id === 'string' &&
     'transcript_path' in input &&
-    typeof (input as any).transcript_path === 'string'
+    typeof (input as Record<string, unknown>).transcript_path === 'string'
   );
 }
 
@@ -110,7 +110,7 @@ export function validateHookInputType<T extends HookEventName>(
     return { isValid: false, error: 'Input must be an object' };
   }
 
-  const obj = input as any;
+  const obj = input as Record<string, unknown>;
 
   if (!('hook_event_name' in obj)) {
     return { isValid: false, error: 'Missing hook_event_name property' };
@@ -120,7 +120,7 @@ export function validateHookInputType<T extends HookEventName>(
     return { 
       isValid: false, 
       error: `Expected hook_event_name to be ${expectedType}`, 
-      actualType: obj.hook_event_name 
+      actualType: obj.hook_event_name as string 
     };
   }
 
@@ -132,7 +132,7 @@ export function validateHookInputType<T extends HookEventName>(
     return { isValid: false, error: 'Missing or invalid transcript_path property' };
   }
 
-  return { isValid: true, data: obj as HookInputMap[T] };
+  return { isValid: true, data: obj as unknown as HookInputMap[T] };
 }
 
 /**
@@ -144,8 +144,8 @@ export function isHookInputLike(value: unknown): value is Pick<HookInput, 'hook_
     value !== null &&
     'hook_event_name' in value &&
     'session_id' in value &&
-    isHookEventName((value as any).hook_event_name) &&
-    typeof (value as any).session_id === 'string'
+    isHookEventName((value as Record<string, unknown>).hook_event_name) &&
+    typeof (value as Record<string, unknown>).session_id === 'string'
   );
 }
 
@@ -157,7 +157,7 @@ export function isHookOutputLike(value: unknown): value is Partial<HookOutput> {
     return false;
   }
 
-  const obj = value as any;
+  const obj = value as Record<string, unknown>;
   return (
     (obj.continue === undefined || typeof obj.continue === 'boolean') &&
     (obj.stopReason === undefined || typeof obj.stopReason === 'string') &&

@@ -123,7 +123,7 @@ describe('specific type guards', () => {
       ...(hookEventName === HookEventName.PreCompact && { trigger: 'manual' as const, custom_instructions: 'test' }),
       ...extraFields,
     };
-    return baseInput as any; // Use type assertion to avoid complex union type issues
+    return baseInput as HookInput; // Use type assertion to avoid complex union type issues
   };
 
   describe('isPreToolUseInput', () => {

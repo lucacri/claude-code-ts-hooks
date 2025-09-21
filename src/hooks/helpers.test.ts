@@ -66,7 +66,7 @@ describe('createHookRegistry', () => {
     const preToolUseHandler = createHookHandler(HookEventName.PreToolUse, async () => ({ decision: 'approve' as const }));
     const stopHandler = createHookHandler(HookEventName.Stop, async () => ({}));
     
-    const handlers = [preToolUseHandler, stopHandler] as any[];
+    const handlers = [preToolUseHandler, stopHandler] as HookHandler<HookInput, HookOutput>[];
     const registry = createHookRegistry(handlers);
 
     expect(registry[HookEventName.PreToolUse]).toBeDefined();
@@ -149,7 +149,7 @@ describe('executeHook', () => {
 });
 
 describe('withLogging', () => {
-  let consoleSpy: any;
+  let consoleSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
     consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});

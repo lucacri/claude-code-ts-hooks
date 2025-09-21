@@ -77,7 +77,8 @@ export function createHookRegistry(
   const registry: HookRegistry = {};
   
   for (const { eventName, handler } of handlers) {
-    registry[eventName] = handler as any;
+    // Type assertion needed due to strict intersection types in HookRegistry
+    (registry as Record<string, unknown>)[eventName] = handler;
   }
   
   return registry;
@@ -126,9 +127,9 @@ export async function executeHook<T extends HookInput, U extends HookOutput>(
  */
 export function withLogging<T extends HookInput, U extends HookOutput>(
   handler: HookHandler<T, U>,
-  logger?: (message: string, data?: any) => void
+  logger?: (message: string, data?: unknown) => void
 ): HookHandler<T, U> {
-  const log = logger || ((message: string, data?: any) => {
+  const log = logger || ((message: string, data?: unknown) => {
     console.log(`[Hook] ${message}`, data ? JSON.stringify(data, null, 2) : '');
   });
 

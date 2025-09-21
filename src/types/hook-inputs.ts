@@ -114,6 +114,6 @@ export function isHookInputOfType<T extends HookEventName>(
     typeof input === 'object' &&
     input !== null &&
     'hook_event_name' in input &&
-    (input as any).hook_event_name === eventType
+    (input as Record<string, unknown>).hook_event_name === eventType
   );
 }
