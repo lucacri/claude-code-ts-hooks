@@ -61,8 +61,10 @@ export const SubagentStopHookOutputSchema = BaseHookOutputSchema.extend({
  * UserPromptSubmit hook output schema
  */
 export const UserPromptSubmitHookOutputSchema = BaseHookOutputSchema.extend({
-  decision: z.enum(['block']).optional(),
+  decision: z.enum(['approve', 'block']).optional(),
   reason: z.string().optional(),
+  contextFiles: z.array(z.string()).optional(),
+  updatedPrompt: z.string().optional(),
   hookSpecificOutput: z.object({
     hookEventName: z.string(),
     additionalContext: z.string(),
@@ -73,7 +75,8 @@ export const UserPromptSubmitHookOutputSchema = BaseHookOutputSchema.extend({
  * PreCompact hook output schema
  */
 export const PreCompactHookOutputSchema = BaseHookOutputSchema.extend({
-  decision: z.undefined().optional(),
+  decision: z.enum(['approve', 'block']).optional(),
+  reason: z.string().optional(),
 });
 
 /**
