@@ -2,7 +2,7 @@
  * Hook output type definitions for all Claude Code hook events
  */
 
-import { BaseHookOutput, HookDecision } from './base.js';
+import { BaseHookOutput, HookDecision, HookEventName } from './base.js';
 
 /**
  * Output for PreToolUse hook - can approve or block tool execution
@@ -81,13 +81,13 @@ export interface PreCompactHookOutput extends BaseHookOutput {
  * Map of hook event names to their corresponding output types
  */
 export interface HookOutputMap {
-  PreToolUse: PreToolUseHookOutput;
-  PostToolUse: PostToolUseHookOutput;
-  Notification: NotificationHookOutput;
-  Stop: StopHookOutput;
-  SubagentStop: SubagentStopHookOutput;
-  UserPromptSubmit: UserPromptSubmitHookOutput;
-  PreCompact: PreCompactHookOutput;
+  [HookEventName.PreToolUse]: PreToolUseHookOutput;
+  [HookEventName.PostToolUse]: PostToolUseHookOutput;
+  [HookEventName.Notification]: NotificationHookOutput;
+  [HookEventName.Stop]: StopHookOutput;
+  [HookEventName.SubagentStop]: SubagentStopHookOutput;
+  [HookEventName.UserPromptSubmit]: UserPromptSubmitHookOutput;
+  [HookEventName.PreCompact]: PreCompactHookOutput;
 }
 
 /**

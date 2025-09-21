@@ -7,13 +7,14 @@ import {
   validateHookInput,
   createHookOutput,
   isPreToolUseInput,
+  HookEventName,
   type PermissionResult,
   type ClaudeCodeOptions,
 } from 'claude-code-ts-hooks';
 
 // Example: Custom permission handler that uses hooks
 class HookBasedPermissionHandler {
-  private preToolUseHandler = createHookHandler('PreToolUse', async (input) => {
+  private preToolUseHandler = createHookHandler(HookEventName.PreToolUse, async (input) => {
     console.log(`🔍 Evaluating tool: ${input.tool_name}`);
     
     // Example: Block file system operations in sensitive directories
@@ -40,7 +41,7 @@ class HookBasedPermissionHandler {
     const hookInput = {
       session_id: `session-${Date.now()}`,
       transcript_path: '/tmp/current-transcript.json',
-      hook_event_name: 'PreToolUse' as const,
+      hook_event_name: HookEventName.PreToolUse as const,
       tool_name: toolName,
       tool_input: input,
     };
@@ -112,7 +113,7 @@ class HookBasedSessionManager {
     lastActivity: Date; 
   }>();
 
-  private stopHandler = createHookHandler('Stop', async (input) => {
+  private stopHandler = createHookHandler(HookEventName.Stop, async (input) => {
     const session = this.sessions.get(input.session_id);
     if (session) {
       const duration = Date.now() - session.startTime.getTime();
@@ -128,7 +129,7 @@ class HookBasedSessionManager {
     return createHookOutput.success();
   });
 
-  private postToolUseHandler = createHookHandler('PostToolUse', async (input) => {
+  private postToolUseHandler = createHookHandler(HookEventName.PostToolUse, async (input) => {
     // Track tool usage
     let session = this.sessions.get(input.session_id);
     if (!session) {
@@ -159,10 +160,10 @@ class HookBasedSessionManager {
     
     try {
       switch (input.hook_event_name) {
-        case 'PostToolUse':
+        case HookEventName.PostToolUse:
           await this.postToolUseHandler.handler(input);
           break;
-        case 'Stop':
+        case HookEventName.Stop:
           await this.stopHandler.handler(input);
           break;
         default:
@@ -211,7 +212,7 @@ if (require.main === module) {
   sessionManager.processHookEvent({
     session_id: 'demo-session',
     transcript_path: '/tmp/demo-transcript.json',
-    hook_event_name: 'PostToolUse',
+    hook_event_name: HookEventName.PostToolUse,
     tool_name: 'write_file',
     tool_input: { path: './demo.txt', content: 'Hello!' },
     tool_response: { success: true },
@@ -222,7 +223,7 @@ if (require.main === module) {
     sessionManager.processHookEvent({
       session_id: 'demo-session',
       transcript_path: '/tmp/demo-transcript.json',
-      hook_event_name: 'Stop',
+      hook_event_name: HookEventName.Stop,
       stop_hook_active: true,
     });
     

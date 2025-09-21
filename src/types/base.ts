@@ -44,14 +44,20 @@ export type HookDecision = 'approve' | 'block';
 /**
  * Hook event names supported by Claude Code
  */
-export type HookEventName = 
-  | 'PreToolUse'
-  | 'PostToolUse'
-  | 'Notification'
-  | 'Stop'
-  | 'SubagentStop'
-  | 'UserPromptSubmit'
-  | 'PreCompact';
+export enum HookEventName {
+  PreToolUse = 'PreToolUse',
+  PostToolUse = 'PostToolUse',
+  Notification = 'Notification',
+  Stop = 'Stop',
+  SubagentStop = 'SubagentStop',
+  UserPromptSubmit = 'UserPromptSubmit',
+  PreCompact = 'PreCompact',
+}
+
+/**
+ * Hook event name type for backward compatibility
+ */
+export type HookEventNameType = `${HookEventName}`;
 
 /**
  * Configuration for hook execution

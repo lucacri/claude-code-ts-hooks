@@ -39,12 +39,15 @@ export * from './utils/index.js';
 // Export hook helpers
 export * from './hooks/index.js';
 
+// Export the enum for direct usage
+export { HookEventName } from './types/base.js';
+
 // Re-export commonly used types for convenience
 export type {
   // Base types
   BaseHookInput,
   BaseHookOutput,
-  HookEventName,
+  HookEventNameType,
   HookConfig,
   ToolInput,
   ToolResponse,

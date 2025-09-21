@@ -66,7 +66,7 @@ export function validateHookEventName(eventName: unknown): ValidationResult<Hook
 /**
  * Type-safe hook input parser with specific event type
  */
-export function parseHookInput<T extends keyof HookInputMap>(
+export function parseHookInput<T extends HookEventName>(
   input: unknown,
   expectedEventName: T
 ): ValidationResult<HookInputMap[T]> {

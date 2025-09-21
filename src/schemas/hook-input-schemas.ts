@@ -3,6 +3,7 @@
  */
 
 import { z } from 'zod';
+import { HookEventName } from '../types/base.js';
 
 /**
  * Base hook input schema
@@ -23,7 +24,7 @@ export const ToolResponseSchema = z.record(z.string(), z.unknown());
  * PreToolUse hook input schema
  */
 export const PreToolUseHookInputSchema = BaseHookInputSchema.extend({
-  hook_event_name: z.literal('PreToolUse'),
+  hook_event_name: z.literal(HookEventName.PreToolUse),
   tool_name: z.string(),
   tool_input: ToolInputSchema,
 });
@@ -32,7 +33,7 @@ export const PreToolUseHookInputSchema = BaseHookInputSchema.extend({
  * PostToolUse hook input schema
  */
 export const PostToolUseHookInputSchema = BaseHookInputSchema.extend({
-  hook_event_name: z.literal('PostToolUse'),
+  hook_event_name: z.literal(HookEventName.PostToolUse),
   tool_name: z.string(),
   tool_input: ToolInputSchema,
   tool_response: ToolResponseSchema,
@@ -42,7 +43,7 @@ export const PostToolUseHookInputSchema = BaseHookInputSchema.extend({
  * Notification hook input schema
  */
 export const NotificationHookInputSchema = BaseHookInputSchema.extend({
-  hook_event_name: z.literal('Notification'),
+  hook_event_name: z.literal(HookEventName.Notification),
   message: z.string(),
 });
 
@@ -50,7 +51,7 @@ export const NotificationHookInputSchema = BaseHookInputSchema.extend({
  * Stop hook input schema
  */
 export const StopHookInputSchema = BaseHookInputSchema.extend({
-  hook_event_name: z.literal('Stop'),
+  hook_event_name: z.literal(HookEventName.Stop),
   stop_hook_active: z.boolean(),
 });
 
@@ -58,7 +59,7 @@ export const StopHookInputSchema = BaseHookInputSchema.extend({
  * SubagentStop hook input schema
  */
 export const SubagentStopHookInputSchema = BaseHookInputSchema.extend({
-  hook_event_name: z.literal('SubagentStop'),
+  hook_event_name: z.literal(HookEventName.SubagentStop),
   stop_hook_active: z.boolean(),
 });
 
@@ -66,7 +67,7 @@ export const SubagentStopHookInputSchema = BaseHookInputSchema.extend({
  * UserPromptSubmit hook input schema
  */
 export const UserPromptSubmitHookInputSchema = BaseHookInputSchema.extend({
-  hook_event_name: z.literal('UserPromptSubmit'),
+  hook_event_name: z.literal(HookEventName.UserPromptSubmit),
   prompt: z.string(),
 });
 
@@ -74,7 +75,7 @@ export const UserPromptSubmitHookInputSchema = BaseHookInputSchema.extend({
  * PreCompact hook input schema
  */
 export const PreCompactHookInputSchema = BaseHookInputSchema.extend({
-  hook_event_name: z.literal('PreCompact'),
+  hook_event_name: z.literal(HookEventName.PreCompact),
   trigger: z.string(),
   custom_instructions: z.string(),
 });
@@ -95,12 +96,4 @@ export const HookInputSchema = z.discriminatedUnion('hook_event_name', [
 /**
  * Hook event name schema
  */
-export const HookEventNameSchema = z.enum([
-  'PreToolUse',
-  'PostToolUse',
-  'Notification',
-  'Stop',
-  'SubagentStop',
-  'UserPromptSubmit',
-  'PreCompact',
-]);
+export const HookEventNameSchema = z.nativeEnum(HookEventName);

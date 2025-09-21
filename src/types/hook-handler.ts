@@ -4,6 +4,7 @@
 
 import { HookInput, HookInputMap } from './hook-inputs.js';
 import { HookOutput, HookOutputMap } from './hook-outputs.js';
+import { HookEventName } from './base.js';
 
 /**
  * Generic hook handler function type
@@ -16,7 +17,7 @@ export type HookHandler<
 /**
  * Specific hook handler for a given event type
  */
-export type HookHandlerFor<T extends keyof HookInputMap> = HookHandler<
+export type HookHandlerFor<T extends HookEventName> = HookHandler<
   HookInputMap[T],
   HookOutputMap[T]
 >;
@@ -25,13 +26,13 @@ export type HookHandlerFor<T extends keyof HookInputMap> = HookHandler<
  * Map of hook event names to their handler functions
  */
 export interface HookHandlerMap {
-  PreToolUse: HookHandlerFor<'PreToolUse'>;
-  PostToolUse: HookHandlerFor<'PostToolUse'>;
-  Notification: HookHandlerFor<'Notification'>;
-  Stop: HookHandlerFor<'Stop'>;
-  SubagentStop: HookHandlerFor<'SubagentStop'>;
-  UserPromptSubmit: HookHandlerFor<'UserPromptSubmit'>;
-  PreCompact: HookHandlerFor<'PreCompact'>;
+  [HookEventName.PreToolUse]: HookHandlerFor<HookEventName.PreToolUse>;
+  [HookEventName.PostToolUse]: HookHandlerFor<HookEventName.PostToolUse>;
+  [HookEventName.Notification]: HookHandlerFor<HookEventName.Notification>;
+  [HookEventName.Stop]: HookHandlerFor<HookEventName.Stop>;
+  [HookEventName.SubagentStop]: HookHandlerFor<HookEventName.SubagentStop>;
+  [HookEventName.UserPromptSubmit]: HookHandlerFor<HookEventName.UserPromptSubmit>;
+  [HookEventName.PreCompact]: HookHandlerFor<HookEventName.PreCompact>;
 }
 
 /**

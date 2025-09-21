@@ -9,14 +9,56 @@ import type {
   HookExecutionResult,
   HookExecutionContext,
 } from '../types/hook-handler.js';
-import type { HookInput, HookInputMap } from '../types/hook-inputs.js';
+import type { HookInput } from '../types/hook-inputs.js';
 import type { HookOutput } from '../types/hook-outputs.js';
 import type { HookEventName, HookConfig } from '../types/base.js';
 
 /**
  * Creates a type-safe hook handler for a specific event type
+ * Overloaded for each hook event type to provide precise type inference
  */
-export function createHookHandler<T extends keyof HookInputMap>(
+export function createHookHandler<T extends HookEventName>(
+  eventName: T,
+  handler: HookHandlerFor<T>
+): { eventName: T; handler: HookHandlerFor<T> };
+
+export function createHookHandler(
+  eventName: HookEventName.PreToolUse,
+  handler: HookHandlerFor<HookEventName.PreToolUse>
+): { eventName: HookEventName.PreToolUse; handler: HookHandlerFor<HookEventName.PreToolUse> };
+
+export function createHookHandler(
+  eventName: HookEventName.PostToolUse,
+  handler: HookHandlerFor<HookEventName.PostToolUse>
+): { eventName: HookEventName.PostToolUse; handler: HookHandlerFor<HookEventName.PostToolUse> };
+
+export function createHookHandler(
+  eventName: HookEventName.Stop,
+  handler: HookHandlerFor<HookEventName.Stop>
+): { eventName: HookEventName.Stop; handler: HookHandlerFor<HookEventName.Stop> };
+
+export function createHookHandler(
+  eventName: HookEventName.UserPromptSubmit,
+  handler: HookHandlerFor<HookEventName.UserPromptSubmit>
+): { eventName: HookEventName.UserPromptSubmit; handler: HookHandlerFor<HookEventName.UserPromptSubmit> };
+
+export function createHookHandler(
+  eventName: HookEventName.Notification,
+  handler: HookHandlerFor<HookEventName.Notification>
+): { eventName: HookEventName.Notification; handler: HookHandlerFor<HookEventName.Notification> };
+
+export function createHookHandler(
+  eventName: HookEventName.SubagentStop,
+  handler: HookHandlerFor<HookEventName.SubagentStop>
+): { eventName: HookEventName.SubagentStop; handler: HookHandlerFor<HookEventName.SubagentStop> };
+
+export function createHookHandler(
+  eventName: HookEventName.PreCompact,
+  handler: HookHandlerFor<HookEventName.PreCompact>
+): { eventName: HookEventName.PreCompact; handler: HookHandlerFor<HookEventName.PreCompact> };
+
+// Implementation
+export function createHookHandler<T extends HookEventName>(
   eventName: T,
   handler: HookHandlerFor<T>
 ): { eventName: T; handler: HookHandlerFor<T> } {
@@ -28,7 +70,7 @@ export function createHookHandler<T extends keyof HookInputMap>(
  */
 export function createHookRegistry(
   handlers: Array<{
-    eventName: keyof HookInputMap;
+    eventName: HookEventName;
     handler: HookHandler;
   }>
 ): HookRegistry {
@@ -127,6 +169,9 @@ export function withTimeout<T extends HookInput, U extends HookOutput>(
   };
 }
 
+/**
+ * Creates a hook configuration object
+ */
 /**
  * Creates a hook configuration object
  */

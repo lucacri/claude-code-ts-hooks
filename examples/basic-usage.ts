@@ -10,12 +10,13 @@ import {
   withLogging,
   withTimeout,
   isPreToolUseInput,
+  HookEventName,
   type PreToolUseHookInput,
   type HookRegistry,
 } from 'claude-code-ts-hooks';
 
 // Example 1: Creating a simple PreToolUse hook
-const preToolUseHandler = createHookHandler('PreToolUse', async (input) => {
+const preToolUseHandler = createHookHandler(HookEventName.PreToolUse, async (input) => {
   console.log(`🔧 About to use tool: ${input.tool_name}`);
   console.log(`📋 Tool parameters:`, input.tool_input);
   
@@ -24,7 +25,7 @@ const preToolUseHandler = createHookHandler('PreToolUse', async (input) => {
 });
 
 // Example 2: Creating a Stop hook (completion notification)
-const stopHandler = createHookHandler('Stop', async (input) => {
+const stopHandler = createHookHandler(HookEventName.Stop, async (input) => {
   console.log('🎉 Claude has finished processing!');
   console.log(`📍 Session: ${input.session_id}`);
   
@@ -34,7 +35,7 @@ const stopHandler = createHookHandler('Stop', async (input) => {
 
 // Example 3: Creating a hook with logging
 const loggedHandler = withLogging(
-  createHookHandler('UserPromptSubmit', async (input) => {
+  createHookHandler(HookEventName.UserPromptSubmit, async (input) => {
     console.log(`👤 User submitted: ${input.prompt.substring(0, 50)}...`);
     return createHookOutput.success();
   }),
@@ -43,7 +44,7 @@ const loggedHandler = withLogging(
 
 // Example 4: Creating a hook with timeout
 const timedHandler = withTimeout(
-  createHookHandler('PostToolUse', async (input) => {
+  createHookHandler(HookEventName.PostToolUse, async (input) => {
     // Simulate some async work
     await new Promise(resolve => setTimeout(resolve, 1000));
     
@@ -82,7 +83,7 @@ const validateAndProcessInput = (unknownInput: unknown) => {
 };
 
 // Example 7: Hook with conditional logic
-const conditionalHandler = createHookHandler('PreToolUse', async (input) => {
+const conditionalHandler = createHookHandler(HookEventName.PreToolUse, async (input) => {
   // Block dangerous tools
   const dangerousTools = ['rm', 'delete', 'format'];
   
@@ -129,7 +130,7 @@ if (require.main === module) {
   const sampleInput: PreToolUseHookInput = {
     session_id: 'example-session-123',
     transcript_path: '/tmp/example-transcript.json',
-    hook_event_name: 'PreToolUse',
+    hook_event_name: HookEventName.PreToolUse,
     tool_name: 'write_file',
     tool_input: {
       path: './example.txt',

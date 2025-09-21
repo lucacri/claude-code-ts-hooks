@@ -52,7 +52,7 @@
     "vitest": "^1.0.0"
   },
   "dependencies": {
-    "zod": "^3.22.0"
+    "zod": "^3.25.76"
   },
   "peerDependencies": {
     "@anthropic-ai/claude-code": "^1.0.0"

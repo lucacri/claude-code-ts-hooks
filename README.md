@@ -32,12 +32,12 @@ pnpm add claude-code-ts-hooks
 import { 
   createHookHandler, 
   validateHookInput, 
-  PreToolUseHookInput,
+  HookEventName,
   createHookOutput 
 } from 'claude-code-ts-hooks';
 
 // Create a type-safe PreToolUse hook handler
-const preToolUseHandler = createHookHandler('PreToolUse', async (input) => {
+const preToolUseHandler = createHookHandler(HookEventName.PreToolUse, async (input) => {
   console.log(`About to use tool: ${input.tool_name}`);
   
   // Type-safe access to tool_input
@@ -113,18 +113,19 @@ import {
   createHookHandler, 
   createHookOutput,
   withLogging,
-  withTimeout 
+  withTimeout,
+  HookEventName 
 } from 'claude-code-ts-hooks';
 
 // Basic hook handler
-const stopHook = createHookHandler('Stop', async (input) => {
+const stopHook = createHookHandler(HookEventName.Stop, async (input) => {
   console.log('Claude finished processing');
   return createHookOutput.success();
 });
 
 // Hook with logging
 const loggedHandler = withLogging(
-  createHookHandler('UserPromptSubmit', async (input) => {
+  createHookHandler(HookEventName.UserPromptSubmit, async (input) => {
     console.log('User prompt:', input.prompt);
     return createHookOutput.success();
   })
@@ -132,7 +133,7 @@ const loggedHandler = withLogging(
 
 // Hook with timeout
 const timedHandler = withTimeout(
-  createHookHandler('PreToolUse', async (input) => {
+  createHookHandler(HookEventName.PreToolUse, async (input) => {
     // Some async operation
     await new Promise(resolve => setTimeout(resolve, 1000));
     return createHookOutput.approve();
@@ -144,11 +145,11 @@ const timedHandler = withTimeout(
 ### 2. Hook Registry
 
 ```typescript
-import { createHookRegistry, createHookHandler } from 'claude-code-ts-hooks';
+import { createHookRegistry, createHookHandler, HookEventName } from 'claude-code-ts-hooks';
 
 // Create multiple handlers
 const handlers = [
-  createHookHandler('PreToolUse', async (input) => {
+  createHookHandler(HookEventName.PreToolUse, async (input) => {
     // Validate tool usage
     if (input.tool_name === 'dangerous_tool') {
       return createHookOutput.deny('Tool not allowed');
@@ -156,13 +157,13 @@ const handlers = [
     return createHookOutput.approve();
   }),
   
-  createHookHandler('PostToolUse', async (input) => {
+  createHookHandler(HookEventName.PostToolUse, async (input) => {
     // Log tool usage
     console.log(`Tool ${input.tool_name} completed`);
     return createHookOutput.success();
   }),
   
-  createHookHandler('Stop', async (input) => {
+  createHookHandler(HookEventName.Stop, async (input) => {
     // Play completion sound or notification
     console.log('🎵 Task completed!');
     return createHookOutput.success();
@@ -179,7 +180,8 @@ const hookRegistry = createHookRegistry(handlers);
 import { 
   validateHookInput, 
   parseHookInput, 
-  isPreToolUseInput 
+  isPreToolUseInput,
+  HookEventName 
 } from 'claude-code-ts-hooks';
 
 // General validation
@@ -194,7 +196,7 @@ if (result.success) {
 }
 
 // Specific event validation
-const preToolResult = parseHookInput(unknownInput, 'PreToolUse');
+const preToolResult = parseHookInput(unknownInput, HookEventName.PreToolUse);
 if (preToolResult.success) {
   // TypeScript knows this is PreToolUseHookInput
   console.log('Tool:', preToolResult.data.tool_name);
@@ -205,9 +207,9 @@ if (preToolResult.success) {
 ### 4. Error Handling
 
 ```typescript
-import { executeHook, createHookHandler } from 'claude-code-ts-hooks';
+import { executeHook, createHookHandler, HookEventName } from 'claude-code-ts-hooks';
 
-const handler = createHookHandler('PreToolUse', async (input) => {
+const handler = createHookHandler(HookEventName.PreToolUse, async (input) => {
   // Potentially failing operation
   if (Math.random() > 0.5) {
     throw new Error('Random failure');
@@ -231,7 +233,8 @@ import { query } from '@anthropic-ai/claude-code';
 import { 
   validateHookInput, 
   isPreToolUseInput, 
-  createHookOutput 
+  createHookOutput,
+  HookEventName 
 } from 'claude-code-ts-hooks';
 
 // In your Claude Code application
@@ -243,7 +246,7 @@ for await (const message of query({
       const hookInput = {
         session_id: 'current-session',
         transcript_path: '/path/to/transcript',
-        hook_event_name: 'PreToolUse' as const,
+        hook_event_name: HookEventName.PreToolUse,
         tool_name: toolName,
         tool_input: toolInput
       };
