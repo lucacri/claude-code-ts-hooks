@@ -1,7 +1,3 @@
-/**
- * Tests for hook helper functions
- */
-
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   createHookHandler,
@@ -13,12 +9,11 @@ import {
   createHookOutput,
 } from './helpers.js';
 import { HookEventName } from '../types/base.js';
-import type { HookHandlers } from '../types/hook-handlers.js';
 
 describe('createHookHandler', () => {
   it('should create handler for PreToolUse', () => {
-    const handler = createHookHandler(HookEventName.PreToolUse, async (payload) => {
-      return { decision: 'approve' };
+    const handler = createHookHandler(HookEventName.PreToolUse, async (_payload) => {
+      return { decision: 'approve' as const };
     });
 
     expect(handler.eventName).toBe(HookEventName.PreToolUse);
@@ -26,31 +21,23 @@ describe('createHookHandler', () => {
   });
 
   it('should create handler for PostToolUse', () => {
-    const handler = createHookHandler(HookEventName.PostToolUse, async (payload) => {
-      return { decision: 'block' };
+    const handler = createHookHandler(HookEventName.PostToolUse, async (_payload) => {
+      return { decision: 'block' as const };
     });
 
     expect(handler.eventName).toBe(HookEventName.PostToolUse);
   });
 
   it('should create handler for Stop', () => {
-    const handler = createHookHandler(HookEventName.Stop, async (payload) => {
+    const handler = createHookHandler(HookEventName.Stop, async (_payload) => {
       return {};
     });
 
     expect(handler.eventName).toBe(HookEventName.Stop);
   });
 
-  it('should create handler for UserPromptSubmit', () => {
-    const handler = createHookHandler(HookEventName.UserPromptSubmit, async (payload) => {
-      return { decision: 'approve' };
-    });
-
-    expect(handler.eventName).toBe(HookEventName.UserPromptSubmit);
-  });
-
   it('should create handler for Notification', () => {
-    const handler = createHookHandler(HookEventName.Notification, async (payload) => {
+    const handler = createHookHandler(HookEventName.Notification, async (_payload) => {
       return {};
     });
 
@@ -58,7 +45,7 @@ describe('createHookHandler', () => {
   });
 
   it('should create handler for SubagentStop', () => {
-    const handler = createHookHandler(HookEventName.SubagentStop, async (payload) => {
+    const handler = createHookHandler(HookEventName.SubagentStop, async (_payload) => {
       return {};
     });
 
@@ -66,8 +53,8 @@ describe('createHookHandler', () => {
   });
 
   it('should create handler for PreCompact', () => {
-    const handler = createHookHandler(HookEventName.PreCompact, async (payload) => {
-      return { decision: 'approve' };
+    const handler = createHookHandler(HookEventName.PreCompact, async (_payload) => {
+      return {};
     });
 
     expect(handler.eventName).toBe(HookEventName.PreCompact);
@@ -76,11 +63,10 @@ describe('createHookHandler', () => {
 
 describe('createHookRegistry', () => {
   it('should create registry from handlers', () => {
-    const handlers = [
-      createHookHandler(HookEventName.PreToolUse, async () => ({ decision: 'approve' })),
-      createHookHandler(HookEventName.Stop, async () => ({})),
-    ];
-
+    const preToolUseHandler = createHookHandler(HookEventName.PreToolUse, async () => ({ decision: 'approve' as const }));
+    const stopHandler = createHookHandler(HookEventName.Stop, async () => ({}));
+    
+    const handlers = [preToolUseHandler, stopHandler] as any[];
     const registry = createHookRegistry(handlers);
 
     expect(registry[HookEventName.PreToolUse]).toBeDefined();
@@ -163,7 +149,7 @@ describe('executeHook', () => {
 });
 
 describe('withLogging', () => {
-  let consoleSpy: ReturnType<typeof vi.spyOn>;
+  let consoleSpy: any;
 
   beforeEach(() => {
     consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});

@@ -4,7 +4,7 @@
     "module": "ESNext",
     "moduleResolution": "node",
     "lib": ["ES2020"],
-    "types": ["node"],
+    "types": ["node", "vitest/globals"],
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
@@ -32,8 +32,6 @@
   ],
   "exclude": [
     "node_modules",
-    "dist",
-    "**/*.test.ts",
-    "**/*.spec.ts"
+    "dist"
   ]
 }

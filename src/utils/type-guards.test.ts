@@ -108,12 +108,23 @@ describe('isValidHookInputOfType', () => {
 });
 
 describe('specific type guards', () => {
-  const createInput = (hookEventName: HookEventName, extraFields: any = {}): HookInput => ({
-    session_id: 'test-session',
-    transcript_path: '/test/path',
-    hook_event_name: hookEventName,
-    ...extraFields,
-  });
+  const createInput = (hookEventName: HookEventName, extraFields: Record<string, unknown> = {}) => {
+    const baseInput = {
+      session_id: 'test-session',
+      transcript_path: '/test/path',
+      hook_event_name: hookEventName,
+      // Add default required fields for each type
+      ...(hookEventName === HookEventName.PreToolUse && { tool_name: 'test', tool_input: {} }),
+      ...(hookEventName === HookEventName.PostToolUse && { tool_name: 'test', tool_input: {}, tool_response: {} }),
+      ...(hookEventName === HookEventName.Notification && { message: 'test' }),
+      ...(hookEventName === HookEventName.Stop && { stop_hook_active: true }),
+      ...(hookEventName === HookEventName.SubagentStop && { stop_hook_active: false }),
+      ...(hookEventName === HookEventName.UserPromptSubmit && { prompt: 'test' }),
+      ...(hookEventName === HookEventName.PreCompact && { trigger: 'manual' as const, custom_instructions: 'test' }),
+      ...extraFields,
+    };
+    return baseInput as any; // Use type assertion to avoid complex union type issues
+  };
 
   describe('isPreToolUseInput', () => {
     it('should return true for PreToolUse input', () => {

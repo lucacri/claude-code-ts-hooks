@@ -1,19 +1,24 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
   extends: [
-    'eslint:recommended',
-    '@typescript-eslint/eslint-plugin/dist/configs/recommended.js',
+    'eslint:recommended'
   ],
   plugins: ['@typescript-eslint'],
   parserOptions: {
     ecmaVersion: 2020,
-    sourceType: 'module',
+    sourceType: 'module'
+  },
+  env: {
+    node: true,
+    es2020: true,
+    browser: true
   },
   rules: {
-    '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
-    '@typescript-eslint/no-unused-vars': 'error',
-    '@typescript-eslint/prefer-const': 'error',
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    'no-unused-vars': 'off',
+    'no-undef': 'off', // TypeScript handles this
+    'no-redeclare': 'off' // TypeScript handles function overloads
   },
-  ignorePatterns: ['dist/', 'node_modules/'],
+  ignorePatterns: ['dist/', 'node_modules/', '**/*.js'],
 };

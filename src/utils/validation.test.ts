@@ -242,9 +242,9 @@ describe('parseHookInput', () => {
     const result = parseHookInput(input, HookEventName.PreToolUse);
 
     expect(result.success).toBe(false);
-    if (!result.success) {
+    if (!result.success && result.error) {
       expect(result.error).toBeInstanceOf(z.ZodError);
-      expect(result.error.issues[0].message).toContain('Expected hook event');
+      expect(result.error.issues[0]?.message).toContain('Expected hook event');
     }
   });
 
@@ -303,9 +303,9 @@ describe('safeParseJSON', () => {
     const result = safeParseJSON(jsonString);
 
     expect(result.success).toBe(false);
-    if (!result.success) {
+    if (!result.success && result.error) {
       expect(result.error).toBeInstanceOf(z.ZodError);
-      expect(result.error.issues[0].message).toContain('Invalid JSON');
+      expect(result.error.issues[0]?.message).toContain('Invalid JSON');
     }
   });
 

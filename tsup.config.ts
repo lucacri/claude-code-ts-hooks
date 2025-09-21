@@ -13,4 +13,5 @@ export default defineConfig({
   minify: false,
   bundle: true,
   external: ['zod', '@anthropic-ai/claude-code'],
+  tsconfig: 'tsconfig.build.json',
 });
