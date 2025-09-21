@@ -6,119 +6,70 @@
  * 
  * @example Basic usage:
  * ```typescript
- * import { 
- *   PreToolUseHookInput, 
- *   PreToolUseHookOutput, 
- *   createHookHandler, 
- *   validateHookInput 
- * } from 'claude-code-ts-hooks';
+ * import { runHook, type HookHandlers } from 'claude-code-ts-hooks';
  * 
- * // Create a type-safe hook handler
- * const preToolUseHandler = createHookHandler('PreToolUse', async (input) => {
- *   console.log(`About to use tool: ${input.tool_name}`);
- *   return { continue: true, decision: 'approve' };
- * });
+ * const handlers: HookHandlers = {
+ *   preToolUse: async (payload) => {
+ *     console.log(`About to use tool: ${payload.tool_name}`);
+ *     return { decision: 'approve' };
+ *   },
+ *   
+ *   stop: async (payload) => {
+ *     console.log('Task completed!');
+ *     return {};
+ *   }
+ * };
  * 
- * // Validate hook input at runtime
- * const result = validateHookInput(someUnknownInput);
- * if (result.success) {
- *   console.log('Valid hook input:', result.data);
- * }
+ * runHook(handlers);
  * ```
  */
 
-// Export all types
-export * from './types/index.js';
+// Export the main hook runner
+export { runHook, log } from './run-hook.js';
 
-// Export all schemas
-export * from './schemas/index.js';
-
-// Export all utilities
-export * from './utils/index.js';
-
-// Export hook helpers
-export * from './hooks/index.js';
-
-// Export the enum for direct usage
-export { HookEventName } from './types/base.js';
-
-// Re-export commonly used types for convenience
+// Export simple types
 export type {
-  // Base types
-  BaseHookInput,
-  BaseHookOutput,
-  HookEventNameType,
-  HookConfig,
-  ToolInput,
-  ToolResponse,
+  // Payload types
+  BaseHookPayload,
+  PreToolUsePayload,
+  PostToolUsePayload,
+  NotificationPayload,
+  StopPayload,
+  SubagentStopPayload,
+  UserPromptSubmitPayload,
+  PreCompactPayload,
+  SessionStartPayload,
+  HookPayload,
+} from './types/hook-payloads.js';
 
-  // Input types
-  HookInput,
-  HookInputMap,
-  PreToolUseHookInput,
-  PostToolUseHookInput,
-  NotificationHookInput,
-  StopHookInput,
-  SubagentStopHookInput,
-  UserPromptSubmitHookInput,
-  PreCompactHookInput,
+// Export response types
+export type {
+  BaseHookResponse,
+  PreToolUseResponse,
+  PostToolUseResponse,
+  StopResponse,
+  UserPromptSubmitResponse,
+  PreCompactResponse,
+  SessionStartResponse,
+  HookResponse,
+} from './types/hook-responses.js';
 
-  // Output types
-  HookOutput,
-  HookOutputMap,
-  PreToolUseHookOutput,
-  PostToolUseHookOutput,
-  NotificationHookOutput,
-  StopHookOutput,
-  SubagentStopHookOutput,
-  UserPromptSubmitHookOutput,
-  PreCompactHookOutput,
+// Export handler types
+export type {
+  PreToolUseHandler,
+  PostToolUseHandler,
+  NotificationHandler,
+  StopHandler,
+  SubagentStopHandler,
+  UserPromptSubmitHandler,
+  PreCompactHandler,
+  SessionStartHandler,
+  HookHandlers,
+} from './types/hook-handlers.js';
 
-  // Handler types
-  HookHandler,
-  HookHandlerFor,
-  HookRegistry,
-  HookExecutionResult,
-  HookExecutionContext,
-
-  // SDK types
-  PermissionResult,
-  CanUseTool,
-  PermissionMode,
-  ClaudeCodeOptions,
-} from './types/index.js';
-
-// Re-export commonly used functions
-export {
-  // Validation
-  validateHookInput,
-  validateHookOutput,
-  validateHookEventName,
-  parseHookInput,
-  safeParseJSON,
-
-  // Type guards
-  isHookInputOfType,
-  isPreToolUseInput,
-  isPostToolUseInput,
-  isNotificationInput,
-  isStopInput,
-  isSubagentStopInput,
-  isUserPromptSubmitInput,
-  isPreCompactInput,
-  isHookEventName,
-  isHookInputLike,
-  isHookOutputLike,
-
-  // Hook helpers
-  createHookHandler,
-  createHookRegistry,
-  executeHook,
-  withLogging,
-  withTimeout,
-  createHookConfig,
-  createHookOutput,
-} from './utils/index.js';
+// Export validation utilities (keep the useful parts)
+export * from './utils/index.js';
+export * from './schemas/index.js';
 
 // Package version and metadata
 export const VERSION = '1.0.0';

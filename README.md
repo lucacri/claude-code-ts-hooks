@@ -29,31 +29,30 @@ pnpm add claude-code-ts-hooks
 ## Quick Start
 
 ```typescript
-import { 
-  createHookHandler, 
-  validateHookInput, 
-  HookEventName,
-  createHookOutput 
-} from 'claude-code-ts-hooks';
+import { runHook, log, type HookHandlers } from 'claude-code-ts-hooks';
 
-// Create a type-safe PreToolUse hook handler
-const preToolUseHandler = createHookHandler(HookEventName.PreToolUse, async (input) => {
-  console.log(`About to use tool: ${input.tool_name}`);
-  
-  // Type-safe access to tool_input
-  console.log('Tool parameters:', input.tool_input);
-  
-  // Return type-safe output
-  return createHookOutput.approve('Tool usage approved');
-});
+const handlers: HookHandlers = {
+  preToolUse: async (payload) => {
+    log(`About to use tool: ${payload.tool_name}`);
+    
+    // Block dangerous tools
+    if (payload.tool_name === 'dangerous_tool') {
+      return {
+        decision: 'block',
+        reason: 'Tool not allowed'
+      };
+    }
+    
+    return { decision: 'approve' };
+  },
 
-// Validate hook input at runtime
-const result = validateHookInput(someUnknownInput);
-if (result.success) {
-  console.log('Valid hook input:', result.data);
-} else {
-  console.error('Invalid input:', result.error);
-}
+  stop: async (payload) => {
+    log('🎉 Task completed!');
+    return {};
+  }
+};
+
+runHook(handlers);
 ```
 
 ## Hook Types
@@ -109,69 +108,61 @@ interface BaseHookOutput {
 ### 1. Creating Hook Handlers
 
 ```typescript
-import { 
-  createHookHandler, 
-  createHookOutput,
-  withLogging,
-  withTimeout,
-  HookEventName 
-} from 'claude-code-ts-hooks';
+import { runHook, log, type HookHandlers } from 'claude-code-ts-hooks';
 
-// Basic hook handler
-const stopHook = createHookHandler(HookEventName.Stop, async (input) => {
-  console.log('Claude finished processing');
-  return createHookOutput.success();
-});
+const handlers: HookHandlers = {
+  preToolUse: async (payload) => {
+    log(`🔧 About to use tool: ${payload.tool_name}`);
+    log(`📋 Tool parameters:`, payload.tool_input);
+    
+    return { decision: 'approve', reason: 'Tool usage approved' };
+  },
 
-// Hook with logging
-const loggedHandler = withLogging(
-  createHookHandler(HookEventName.UserPromptSubmit, async (input) => {
-    console.log('User prompt:', input.prompt);
-    return createHookOutput.success();
-  })
-);
+  postToolUse: async (payload) => {
+    log(`✅ Tool ${payload.tool_name} completed successfully`);
+    return {};
+  },
 
-// Hook with timeout
-const timedHandler = withTimeout(
-  createHookHandler(HookEventName.PreToolUse, async (input) => {
-    // Some async operation
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return createHookOutput.approve();
-  }),
-  5000 // 5 second timeout
-);
+  stop: async (payload) => {
+    log('🎉 Claude finished processing!');
+    // You could play a sound, send a notification, etc.
+    return {};
+  },
+
+  userPromptSubmit: async (payload) => {
+    log(`👤 User submitted: ${payload.prompt.substring(0, 50)}...`);
+    return { decision: 'approve' };
+  }
+};
+
+runHook(handlers);
 ```
 
-### 2. Hook Registry
+### 2. Hook with Conditional Logic
 
 ```typescript
-import { createHookRegistry, createHookHandler, HookEventName } from 'claude-code-ts-hooks';
+import { runHook, type HookHandlers } from 'claude-code-ts-hooks';
 
-// Create multiple handlers
-const handlers = [
-  createHookHandler(HookEventName.PreToolUse, async (input) => {
-    // Validate tool usage
-    if (input.tool_name === 'dangerous_tool') {
-      return createHookOutput.deny('Tool not allowed');
+const handlers: HookHandlers = {
+  preToolUse: async (payload) => {
+    // Block dangerous tools
+    const dangerousTools = ['rm', 'delete', 'format'];
+    
+    if (dangerousTools.some(tool => payload.tool_name.includes(tool))) {
+      return {
+        decision: 'block',
+        reason: `Tool ${payload.tool_name} is not allowed`
+      };
     }
-    return createHookOutput.approve();
-  }),
-  
-  createHookHandler(HookEventName.PostToolUse, async (input) => {
-    // Log tool usage
-    console.log(`Tool ${input.tool_name} completed`);
-    return createHookOutput.success();
-  }),
-  
-  createHookHandler(HookEventName.Stop, async (input) => {
-    // Play completion sound or notification
-    console.log('🎵 Task completed!');
-    return createHookOutput.success();
-  })
-];
+    
+    // Log tool usage for audit
+    console.log(`📊 Audit: Tool ${payload.tool_name} used at ${new Date().toISOString()}`);
+    
+    return { decision: 'approve' };
+  }
+};
 
-// Create registry
-const hookRegistry = createHookRegistry(handlers);
+runHook(handlers);
 ```
 
 ### 3. Input Validation
@@ -179,100 +170,81 @@ const hookRegistry = createHookRegistry(handlers);
 ```typescript
 import { 
   validateHookInput, 
-  parseHookInput, 
-  isPreToolUseInput,
-  HookEventName 
+  type PreToolUsePayload 
 } from 'claude-code-ts-hooks';
 
-// General validation
-const result = validateHookInput(unknownInput);
-if (result.success) {
-  console.log('Hook event:', result.data.hook_event_name);
-  
-  // Use type guards for specific handling
-  if (isPreToolUseInput(result.data)) {
-    console.log('Tool name:', result.data.tool_name);
-  }
-}
+// Sample input
+const sampleInput: PreToolUsePayload = {
+  session_id: 'session-123',
+  transcript_path: '/path/to/transcript',
+  hook_type: 'PreToolUse',
+  tool_name: 'write_file',
+  tool_input: { path: './file.txt', content: 'Hello!' }
+};
 
-// Specific event validation
-const preToolResult = parseHookInput(unknownInput, HookEventName.PreToolUse);
-if (preToolResult.success) {
-  // TypeScript knows this is PreToolUseHookInput
-  console.log('Tool:', preToolResult.data.tool_name);
-  console.log('Input:', preToolResult.data.tool_input);
+// General validation
+const result = validateHookInput(sampleInput);
+if (result.success) {
+  console.log('Valid hook input:', result.data);
+} else {
+  console.error('Invalid input:', result.error);
 }
 ```
 
-### 4. Error Handling
+### 4. Complete Example
 
 ```typescript
-import { executeHook, createHookHandler, HookEventName } from 'claude-code-ts-hooks';
+#!/usr/bin/env bun
 
-const handler = createHookHandler(HookEventName.PreToolUse, async (input) => {
-  // Potentially failing operation
-  if (Math.random() > 0.5) {
-    throw new Error('Random failure');
+import { runHook, log, type HookHandlers } from 'claude-code-ts-hooks';
+
+const handlers: HookHandlers = {
+  preToolUse: async (payload) => {
+    log(`🔧 About to use: ${payload.tool_name}`);
+    
+    // Safety check
+    if (payload.tool_name.includes('rm')) {
+      return { decision: 'block', reason: 'Dangerous command blocked' };
+    }
+    
+    return { decision: 'approve' };
+  },
+
+  postToolUse: async (payload) => {
+    log(`✅ Completed: ${payload.tool_name}`);
+    return {};
+  },
+
+  stop: async (payload) => {
+    log('🎉 All done!');
+    return {};
   }
-  return createHookOutput.approve();
-});
+};
 
-// Execute with error handling
-const result = await executeHook(handler, input);
-if (result.success) {
-  console.log('Hook completed in', result.duration, 'ms');
-} else {
-  console.error('Hook failed:', result.error?.message);
-}
+runHook(handlers);
 ```
 
 ### 5. Integration with Claude Code
 
-```typescript
-import { query } from '@anthropic-ai/claude-code';
-import { 
-  validateHookInput, 
-  isPreToolUseInput, 
-  createHookOutput,
-  HookEventName 
-} from 'claude-code-ts-hooks';
+The hooks are designed to work as standalone scripts that Claude Code calls:
 
-// In your Claude Code application
-for await (const message of query({
-  prompt: "Help me write a function",
-  options: {
-    canUseTool: async (toolName, toolInput) => {
-      // Create hook input
-      const hookInput = {
-        session_id: 'current-session',
-        transcript_path: '/path/to/transcript',
-        hook_event_name: HookEventName.PreToolUse,
-        tool_name: toolName,
-        tool_input: toolInput
-      };
-      
-      // Validate and process
-      const validation = validateHookInput(hookInput);
-      if (validation.success && isPreToolUseInput(validation.data)) {
-        // Your hook logic here
-        console.log(`Requesting permission for ${toolName}`);
-        
-        return {
-          behavior: 'allow',
-          updatedInput: toolInput
-        };
-      }
-      
-      return {
-        behavior: 'deny',
-        message: 'Invalid hook input'
-      };
-    }
+```typescript
+#!/usr/bin/env bun
+
+import { runHook, type HookHandlers } from 'claude-code-ts-hooks';
+
+const handlers: HookHandlers = {
+  preToolUse: async (payload) => {
+    // Your hook logic here
+    console.log(`Tool: ${payload.tool_name}`);
+    return { decision: 'approve' };
   }
-})) {
-  console.log(message);
-}
+};
+
+runHook(handlers);
 ```
+
+Save this as a `.ts` file and configure it in your Claude Code settings.
 
 ## API Reference
 
