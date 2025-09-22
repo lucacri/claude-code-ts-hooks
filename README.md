@@ -1,22 +1,29 @@
 # claude-code-ts-hooks
 
-**TypeScript types and utilities for Claude Code hooks** - Providing type safety and runtime validation for hook implementations.
+**Cross-platform TypeScript types and utilities for Claude Code hooks** - Providing type safety and runtime validation for hook implementations across Node.js, Deno, and Bun.
 
 [![npm version](https://badge.fury.io/js/claude-code-ts-hooks.svg)](https://badge.fury.io/js/claude-code-ts-hooks)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![Deno](https://img.shields.io/badge/Deno-1.0+-blue.svg)](https://deno.land/)
+[![Bun](https://img.shields.io/badge/Bun-1.0+-orange.svg)](https://bun.sh/)
 
 ## Overview
 
-This package provides comprehensive TypeScript support for [Claude Code](https://docs.claude.com/en/docs/claude-code/sdk/sdk-typescript.md) hooks, enabling developers to write type-safe hook implementations with runtime validation. It includes:
+This package provides comprehensive TypeScript support for [Claude Code](https://docs.claude.com/en/docs/claude-code/sdk/sdk-typescript.md) hooks with **cross-platform compatibility**, enabling developers to write type-safe hook implementations that work seamlessly across Node.js, Deno, and Bun runtimes. It includes:
 
 - **Complete type definitions** for all Claude Code hook events
+- **Cross-platform runtime detection** and compatibility layer
 - **Runtime validation** using Zod schemas
 - **Utility functions** for creating and managing hooks
 - **Type guards** for runtime type checking
 - **Helper functions** for common hook patterns
+- **Zero-config usage** with Deno and Bun (no build step required)
 
-## Installation
+## Installation & Usage
+
+### Node.js (NPM/Yarn/PNPM)
 
 ```bash
 npm install claude-code-ts-hooks
@@ -28,10 +35,40 @@ pnpm add claude-code-ts-hooks
 
 **Requirements:**
 - Node.js 18+ 
-- TypeScript 5.0+
-- Optional: `@anthropic-ai/claude-code` for integration
+- TypeScript 5.0+ (for development)
+
+### Deno
+
+**No installation required!** Use directly from source:
+
+```typescript
+import { runHook, log, type HookHandlers } from 'https://deno.land/x/claude_code_ts_hooks/src/index.ts';
+// or from your local copy
+import { runHook, log, type HookHandlers } from './src/index.ts';
+```
+
+**Requirements:**
+- Deno 1.0+
+- Run with: `deno run --allow-read --allow-env your-hook.ts`
+
+### Bun
+
+**Use directly from source:**
+
+```bash
+bun run your-hook.ts
+```
+
+```typescript
+import { runHook, log, type HookHandlers } from './src/index.ts';
+```
+
+**Requirements:**
+- Bun 1.0+
 
 ## Quick Start
+
+### Node.js Example
 
 ```typescript
 import { runHook, log, type HookHandlers } from 'claude-code-ts-hooks';
@@ -59,6 +96,82 @@ const handlers: HookHandlers = {
 
 runHook(handlers);
 ```
+
+### Deno Example
+
+Create `hook.ts`:
+```typescript
+#!/usr/bin/env -S deno run --allow-read --allow-env
+
+import { runHook, log, type HookHandlers } from './src/index.ts';
+
+const handlers: HookHandlers = {
+  preToolUse: async (payload) => {
+    log(`About to use tool: ${payload.tool_name}`);
+    return { decision: 'approve' };
+  },
+
+  stop: async (payload) => {
+    log('🎉 Task completed!');
+    return {};
+  }
+};
+
+runHook(handlers);
+```
+
+Run with:
+```bash
+deno run --allow-read --allow-env hook.ts
+```
+
+### Bun Example
+
+Create `hook.ts`:
+```typescript
+#!/usr/bin/env bun
+
+import { runHook, log, type HookHandlers } from './src/index.ts';
+
+const handlers: HookHandlers = {
+  preToolUse: async (payload) => {
+    log(`About to use tool: ${payload.tool_name}`);
+    return { decision: 'approve' };
+  },
+
+  stop: async (payload) => {
+    log('🎉 Task completed!');
+    return {};
+  }
+};
+
+runHook(handlers);
+```
+
+Run with:
+```bash
+bun run hook.ts
+```
+
+## Cross-Platform Features
+
+### Runtime Detection
+
+The library automatically detects the runtime environment and adapts accordingly:
+
+```typescript
+import { detectRuntime, getArgs, getEnv } from 'claude-code-ts-hooks';
+
+const runtime = detectRuntime(); // 'node' | 'deno' | 'bun' | 'unknown'
+const args = getArgs(); // Cross-platform command line arguments
+const envVar = getEnv('MY_VAR'); // Cross-platform environment variable access
+```
+
+### Platform-Specific Examples
+
+- **Node.js**: `examples/simple-hooks.ts` 
+- **Deno**: `examples/simple-hooks-deno.ts`
+- **Bun**: `examples/simple-hooks-bun.ts`
 
 ## Hook Types
 
@@ -297,6 +410,51 @@ This package is built with TypeScript 5.0+ and uses modern features. Make sure y
     "esModuleInterop": true
   }
 }
+```
+
+## Distribution & Publishing
+
+This package is designed to work seamlessly across different JavaScript runtimes:
+
+### NPM Registry (Node.js)
+
+Published to NPM for Node.js users:
+```bash
+npm install claude-code-ts-hooks
+```
+
+### JSR (Deno)
+
+The package can be published to JSR (JavaScript Registry) for Deno:
+```bash
+# Publish to JSR
+deno publish
+```
+
+Deno users can import directly:
+```typescript
+import { runHook } from "jsr:@lucacri/claude-code-ts-hooks";
+```
+
+### Direct Source Usage
+
+For maximum compatibility, users can clone this repository and import directly from source:
+
+```bash
+git clone https://github.com/lucacri/claude-code-ts-hooks.git
+cd claude-code-ts-hooks
+```
+
+Then import from source:
+```typescript
+// Deno
+import { runHook } from "./src/index.ts";
+
+// Bun  
+import { runHook } from "./src/index.ts";
+
+// Node.js (with TypeScript)
+import { runHook } from "./src/index.ts";
 ```
 
 ## Contributing

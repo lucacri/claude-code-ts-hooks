@@ -12,24 +12,28 @@ export function log(...args: unknown[]): void {
   console.log(`[${new Date().toISOString()}]`, ...args)
 }
 
-// Main hook runner
+// Main hook runner - preserved existing Node.js behavior for compatibility
 export function runHook(handlers: HookHandlers): void {
-  const args = getArgs()
-  const hook_type = args[0] || ''
+  // Try to get hook_type from command line arguments
+  let hook_type: string
+  
+  // Use process.argv directly if available (Node.js), fallback to cross-platform
+  if (typeof process !== 'undefined' && process.argv) {
+    hook_type = process.argv[2] || ''
+  } else {
+    const args = getArgs()
+    hook_type = args[0] || ''
+  }
+
   const runtime = detectRuntime()
 
   // For Deno and Bun, we need to handle stdin differently
   if (runtime === 'deno' || runtime === 'bun') {
     handleStdinAsync(hook_type, handlers)
   } else {
-    // Node.js traditional event-based approach
-    // For compatibility with existing tests and Node.js usage
+    // Node.js traditional event-based approach - maintain compatibility
     if (typeof process !== 'undefined' && process.stdin) {
       process.stdin.on('data', async (data: Buffer) => {
-        await processHook(data.toString(), hook_type, handlers)
-      })
-    } else if ((globalThis as any).process?.stdin) {
-      (globalThis as any).process.stdin.on('data', async (data: Buffer) => {
         await processHook(data.toString(), hook_type, handlers)
       })
     }
