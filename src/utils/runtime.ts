@@ -3,24 +3,55 @@
  * Provides compatibility layer for Node.js, Deno, and Bun
  */
 
+// Type declarations for runtime globals
+interface GlobalThisWithRuntimes {
+  Deno?: {
+    args: string[];
+    stdin: {
+      readable: {
+        getReader(): ReadableStreamDefaultReader<Uint8Array>;
+      };
+    };
+    exit(code?: number): never;
+    env: {
+      get(key: string): string | undefined;
+    };
+  };
+  Bun?: unknown;
+  process?: {
+    argv: string[];
+    stdin: {
+      on(event: string, listener: (data: Buffer) => void): void;
+      setEncoding(encoding: string): void;
+    };
+    exit(code?: number): never;
+    env: Record<string, string | undefined>;
+    versions?: {
+      node: string;
+    };
+  };
+}
+
 export type Runtime = 'node' | 'deno' | 'bun' | 'unknown';
 
 /**
  * Detect the current JavaScript runtime
  */
 export function detectRuntime(): Runtime {
+  const global = globalThis as GlobalThisWithRuntimes;
+  
   // Check for Deno
-  if (typeof (globalThis as any).Deno !== 'undefined') {
+  if (typeof global.Deno !== 'undefined') {
     return 'deno';
   }
   
   // Check for Bun
-  if (typeof (globalThis as any).Bun !== 'undefined') {
+  if (typeof global.Bun !== 'undefined') {
     return 'bun';
   }
   
   // Check for Node.js  
-  if (typeof (globalThis as any).process !== 'undefined' && (globalThis as any).process.versions?.node) {
+  if (typeof global.process !== 'undefined' && global.process.versions?.node) {
     return 'node';
   }
   
@@ -32,13 +63,14 @@ export function detectRuntime(): Runtime {
  */
 export function getArgs(): string[] {
   const runtime = detectRuntime();
+  const global = globalThis as GlobalThisWithRuntimes;
   
   switch (runtime) {
     case 'deno':
-      return (globalThis as any).Deno?.args || [];
+      return global.Deno?.args || [];
     case 'bun':
     case 'node':
-      return (globalThis as any).process?.argv?.slice(2) || [];
+      return global.process?.argv?.slice(2) || [];
     default:
       return [];
   }
@@ -49,17 +81,19 @@ export function getArgs(): string[] {
  */
 export async function readStdin(): Promise<string> {
   const runtime = detectRuntime();
+  const global = globalThis as GlobalThisWithRuntimes;
   
   switch (runtime) {
     case 'deno': {
       const chunks: Uint8Array[] = [];
-      const reader = (globalThis as any).Deno?.stdin?.readable?.getReader();
+      const reader = global.Deno?.stdin?.readable?.getReader();
       
       if (!reader) {
         throw new Error('Deno stdin not available');
       }
       
       try {
+        // eslint-disable-next-line no-constant-condition
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
@@ -83,7 +117,7 @@ export async function readStdin(): Promise<string> {
     
     case 'bun':
     case 'node': {
-      const proc = (globalThis as any).process;
+      const proc = global.process;
       if (!proc) {
         throw new Error('Process not available');
       }
@@ -92,8 +126,8 @@ export async function readStdin(): Promise<string> {
         let data = '';
         proc.stdin.setEncoding('utf8');
         
-        proc.stdin.on('data', (chunk: string) => {
-          data += chunk;
+        proc.stdin.on('data', (chunk: Buffer) => {
+          data += chunk.toString();
         });
         
         proc.stdin.on('end', () => {
@@ -114,23 +148,24 @@ export async function readStdin(): Promise<string> {
  */
 export function exit(code: number = 0): void {
   const runtime = detectRuntime();
+  const global = globalThis as GlobalThisWithRuntimes;
   
   switch (runtime) {
     case 'deno':
-      if ((globalThis as any).Deno?.exit) {
-        (globalThis as any).Deno.exit(code);
+      if (global.Deno?.exit) {
+        global.Deno.exit(code);
       }
       break;
     case 'bun':
     case 'node':
-      if ((globalThis as any).process?.exit) {
-        (globalThis as any).process.exit(code);
+      if (global.process?.exit) {
+        global.process.exit(code);
       }
       break;
     default:
       // Fallback for unknown runtimes
-      if (typeof (globalThis as any).process?.exit === 'function') {
-        (globalThis as any).process.exit(code);
+      if (global.process?.exit && typeof global.process.exit === 'function') {
+        global.process.exit(code);
       }
       break;
   }
@@ -141,13 +176,14 @@ export function exit(code: number = 0): void {
  */
 export function getEnv(key: string): string | undefined {
   const runtime = detectRuntime();
+  const global = globalThis as GlobalThisWithRuntimes;
   
   switch (runtime) {
     case 'deno':
-      return (globalThis as any).Deno?.env?.get(key);
+      return global.Deno?.env?.get(key);
     case 'bun':
     case 'node':
-      return (globalThis as any).process?.env?.[key];
+      return global.process?.env?.[key];
     default:
       return undefined;
   }
