@@ -58,14 +58,6 @@
   "dependencies": {
     "zod": "^3.25.76"
   },
-  "peerDependencies": {
-    "@anthropic-ai/claude-code": "^1.0.0"
-  },
-  "peerDependenciesMeta": {
-    "@anthropic-ai/claude-code": {
-      "optional": true
-    }
-  },
   "engines": {
     "node": ">=18.0.0"
   }
