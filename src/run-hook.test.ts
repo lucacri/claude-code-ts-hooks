@@ -63,7 +63,7 @@ describe('runHook', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     originalProcess = global.process;
-    global.process = mockProcess as typeof process;
+    global.process = mockProcess as unknown as typeof process;
     vi.spyOn(console, 'log').mockImplementation(mockConsole.log);
     vi.spyOn(console, 'error').mockImplementation(mockConsole.error);
   });

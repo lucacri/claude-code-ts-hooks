@@ -9,6 +9,7 @@ import {
   createHookOutput,
 } from './helpers.js';
 import { HookEventName } from '../types/base.js';
+import type { HookHandler } from '../types/hook-handler.js';
 
 describe('createHookHandler', () => {
   it('should create handler for PreToolUse', () => {
@@ -66,8 +67,11 @@ describe('createHookRegistry', () => {
     const preToolUseHandler = createHookHandler(HookEventName.PreToolUse, async () => ({ decision: 'approve' as const }));
     const stopHandler = createHookHandler(HookEventName.Stop, async () => ({}));
     
-    const handlers = [preToolUseHandler, stopHandler] as HookHandler<HookInput, HookOutput>[];
-    const registry = createHookRegistry(handlers);
+    const handlersForRegistry = [
+      { eventName: preToolUseHandler.eventName, handler: preToolUseHandler.handler as HookHandler },
+      { eventName: stopHandler.eventName, handler: stopHandler.handler as HookHandler }
+    ];
+    const registry = createHookRegistry(handlersForRegistry);
 
     expect(registry[HookEventName.PreToolUse]).toBeDefined();
     expect(registry[HookEventName.Stop]).toBeDefined();
@@ -149,10 +153,10 @@ describe('executeHook', () => {
 });
 
 describe('withLogging', () => {
-  let consoleSpy: ReturnType<typeof vi.spyOn>;
+  let consoleSpy: ReturnType<typeof vi.spyOn> & { mockRestore: () => void };
 
   beforeEach(() => {
-    consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {}) as ReturnType<typeof vi.spyOn> & { mockRestore: () => void };
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2024-01-01T10:00:00.000Z'));
   });
