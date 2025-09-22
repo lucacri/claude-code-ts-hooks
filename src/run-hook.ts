@@ -1,9 +1,11 @@
 /**
  * Main hook runner following the reference implementation
+ * Cross-platform compatible with Node.js, Deno, and Bun
  */
 
 import type { HookHandlers } from './types/hook-handlers.js'
 import type { HookPayload } from './types/hook-payloads.js'
+import { getArgs, readStdin, exit, detectRuntime } from './utils/runtime.js'
 
 // Logging utility
 export function log(...args: unknown[]): void {
@@ -12,18 +14,54 @@ export function log(...args: unknown[]): void {
 
 // Main hook runner
 export function runHook(handlers: HookHandlers): void {
-  const hook_type = process.argv[2]
+  const args = getArgs()
+  const hook_type = args[0] || ''
+  const runtime = detectRuntime()
 
-  process.stdin.on('data', async (data: Buffer) => {
-    try {
-      const inputData = JSON.parse(data.toString())
-      // Add hook_type for internal processing (not part of official input schema)
-      const payload: HookPayload = {
-        ...inputData,
-        hook_type: hook_type as HookPayload['hook_type'],
-      }
+  // For Deno and Bun, we need to handle stdin differently
+  if (runtime === 'deno' || runtime === 'bun') {
+    handleStdinAsync(hook_type, handlers)
+  } else {
+    // Node.js traditional event-based approach
+    // For compatibility with existing tests and Node.js usage
+    if (typeof process !== 'undefined' && process.stdin) {
+      process.stdin.on('data', async (data: Buffer) => {
+        await processHook(data.toString(), hook_type, handlers)
+      })
+    } else if ((globalThis as any).process?.stdin) {
+      (globalThis as any).process.stdin.on('data', async (data: Buffer) => {
+        await processHook(data.toString(), hook_type, handlers)
+      })
+    }
+  }
+}
 
-      switch (payload.hook_type) {
+/**
+ * Handle stdin asynchronously for Deno and Bun
+ */
+async function handleStdinAsync(hook_type: string, handlers: HookHandlers): Promise<void> {
+  try {
+    const data = await readStdin()
+    await processHook(data, hook_type, handlers)
+  } catch (error) {
+    console.error('Hook error:', error)
+    console.log(JSON.stringify({action: 'continue'}))
+  }
+}
+
+/**
+ * Process hook data (shared between Node.js and Deno/Bun approaches)
+ */
+async function processHook(data: string, hook_type: string, handlers: HookHandlers): Promise<void> {
+  try {
+    const inputData = JSON.parse(data)
+    // Add hook_type for internal processing (not part of official input schema)
+    const payload: HookPayload = {
+      ...inputData,
+      hook_type: hook_type as HookPayload['hook_type'],
+    }
+
+    switch (payload.hook_type) {
         case 'PreToolUse':
           if (handlers.preToolUse) {
             const response = await handlers.preToolUse(payload)
@@ -58,7 +96,12 @@ export function runHook(handlers: HookHandlers): void {
           } else {
             console.log(JSON.stringify({}))
           }
-          process.exit(0)
+          // Use cross-platform exit, but prefer direct process.exit for Node.js in tests
+          if (typeof process !== 'undefined' && process.exit) {
+            process.exit(0)
+          } else {
+            exit(0)
+          }
           return // Unreachable but satisfies linter
 
         case 'SubagentStop':
@@ -68,7 +111,12 @@ export function runHook(handlers: HookHandlers): void {
           } else {
             console.log(JSON.stringify({}))
           }
-          process.exit(0)
+          // Use cross-platform exit, but prefer direct process.exit for Node.js in tests
+          if (typeof process !== 'undefined' && process.exit) {
+            process.exit(0)
+          } else {
+            exit(0)
+          }
           return // Unreachable but satisfies linter
 
         case 'UserPromptSubmit':
@@ -98,12 +146,11 @@ export function runHook(handlers: HookHandlers): void {
           }
           break
 
-        default:
-          console.log(JSON.stringify({}))
-      }
-    } catch (error) {
-      console.error('Hook error:', error)
-      console.log(JSON.stringify({action: 'continue'}))
-    }
-  })
+    default:
+      console.log(JSON.stringify({}))
+  }
+  } catch (error) {
+    console.error('Hook error:', error)
+    console.log(JSON.stringify({action: 'continue'}))
+  }
 }
