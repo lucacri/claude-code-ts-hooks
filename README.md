@@ -26,6 +26,11 @@ yarn add claude-code-ts-hooks
 pnpm add claude-code-ts-hooks
 ```
 
+**Requirements:**
+- Node.js 18+ 
+- TypeScript 5.0+
+- Optional: `@anthropic-ai/claude-code` for integration
+
 ## Quick Start
 
 ```typescript

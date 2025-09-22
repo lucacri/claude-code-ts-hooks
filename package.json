@@ -22,6 +22,9 @@
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "keywords": [
     "claude",
     "claude-code",
