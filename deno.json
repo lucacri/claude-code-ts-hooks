@@ -1,0 +1,48 @@
+{
+  "name": "@lucacri/claude-code-ts-hooks",
+  "version": "1.0.0",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "imports": {
+    "zod": "https://deno.land/x/zod@v3.22.4/mod.ts"
+  },
+  "tasks": {
+    "test": "deno test --allow-read --allow-env",
+    "lint": "deno lint src/",
+    "check": "deno check src/index.ts",
+    "example": "deno run --allow-read --allow-env examples/simple-hooks-deno.ts"
+  },
+  "lint": {
+    "include": ["src/", "examples/"],
+    "exclude": ["dist/", "node_modules/"]
+  },
+  "fmt": {
+    "include": ["src/", "examples/"],
+    "exclude": ["dist/", "node_modules/"],
+    "options": {
+      "useTabs": false,
+      "lineWidth": 100,
+      "indentWidth": 2,
+      "semiColons": true,
+      "singleQuote": true,
+      "proseWrap": "preserve"
+    }
+  },
+  "compilerOptions": {
+    "allowJs": false,
+    "strict": true,
+    "exactOptionalPropertyTypes": false,
+    "noUncheckedIndexedAccess": true,
+    "lib": ["ES2020", "DOM"]
+  },
+  "publish": {
+    "include": [
+      "src/",
+      "examples/",
+      "README.md",
+      "LICENSE",
+      "deno.json"
+    ]
+  }
+}

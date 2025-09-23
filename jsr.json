@@ -1,0 +1,17 @@
+{
+  "name": "@lucacri/claude-code-ts-hooks",
+  "version": "1.0.0",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "publish": {
+    "include": [
+      "src/",
+      "examples/",
+      "README.md",
+      "LICENSE",
+      "deno.json",
+      "jsr.json"
+    ]
+  }
+}
