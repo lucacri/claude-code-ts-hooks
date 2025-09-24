@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (if present)
+        run: |
+          if npm run -s build 2>/dev/null; then
+            echo "Built successfully"
+          else
+            echo "No build script, skipping"
+          fi
+
+      - name: Configure GitHub Packages for scoped packages (if applicable)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NAME=$(node -p "require('./package.json').name || ''")
+          if [[ "$NAME" == @*/* ]]; then
+            SCOPE=$(node -p "require('./package.json').name.split('/')[0]")
+            echo "${SCOPE}:registry=https://npm.pkg.github.com" >> ~/.npmrc
+            echo "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}" >> ~/.npmrc
+            echo "Configured GitHub Packages for scope ${SCOPE}"
+          else
+            echo "Package name is not scoped; skipping GitHub Packages config"
+          fi
+
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # If set, enables npm publish automatically via release.config.js
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
