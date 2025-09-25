@@ -1,6 +1,6 @@
 {
-  "name": "claude-code-ts-hooks",
-  "version": "1.0.0",
+  "name": "@lucacri/claude-code-ts-hooks",
+  "version": "0.0.0-development",
   "description": "TypeScript types and utilities for Claude Code hooks - providing type safety for hook implementations",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -36,7 +36,8 @@
     "example:node": "node examples/simple-hooks.ts",
     "example:deno": "deno run --allow-read --allow-env examples/simple-hooks-deno.ts",
     "example:bun": "bun run examples/simple-hooks-bun.ts",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "release": "semantic-release"
   },
   "engines": {
     "node": ">=18.0.0",
@@ -65,12 +66,22 @@
     "url": "https://github.com/lucacri/claude-code-ts-hooks/issues"
   },
   "homepage": "https://github.com/lucacri/claude-code-ts-hooks#readme",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^12.0.0",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^10.0.3",
+    "@semantic-release/npm": "^12.0.1",
+    "@semantic-release/release-notes-generator": "^13.0.0",
     "@types/node": "^20.19.17",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitest/coverage-v8": "^1.6.1",
     "eslint": "^8.0.0",
+    "semantic-release": "^23.0.8",
     "tsup": "^8.0.0",
     "typescript": "^5.0.0",
     "vitest": "^1.0.0"
