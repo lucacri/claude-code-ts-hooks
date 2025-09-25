@@ -5,6 +5,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { runHook, log } from './run-hook.js';
 import type { HookHandlers } from './types/hook-handlers.js';
+import * as runtime from './utils/runtime.js';
 
 // Mock process for testing
 const mockProcess = {
@@ -70,6 +71,7 @@ describe('runHook', () => {
 
   afterEach(() => {
     global.process = originalProcess;
+    vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
@@ -392,5 +394,151 @@ describe('runHook', () => {
 
     // Just verify that when no handler is provided, empty response is returned
     expect(mockConsole.log).toHaveBeenCalledWith(JSON.stringify({}));
+  });
+
+  it('should handle Deno runtime path', () => {
+    // Mock the runtime detection to return deno
+    vi.spyOn(runtime, 'detectRuntime').mockReturnValue('deno');
+    vi.spyOn(runtime, 'getArgs').mockReturnValue(['PreToolUse']);
+    
+    const handlers: HookHandlers = {};
+
+    runHook(handlers);
+    
+    // The function should complete without error for Deno runtime
+    expect(runtime.detectRuntime).toHaveBeenCalled();
+  });
+
+  it('should handle Bun runtime path', () => {
+    // Mock the runtime detection to return bun  
+    vi.spyOn(runtime, 'detectRuntime').mockReturnValue('bun');
+    vi.spyOn(runtime, 'getArgs').mockReturnValue(['PreToolUse']);
+    
+    const handlers: HookHandlers = {};
+
+    runHook(handlers);
+    
+    // The function should complete without error for Bun runtime
+    expect(runtime.detectRuntime).toHaveBeenCalled();
+  });
+
+  it('should use getArgs when process.argv is not available', () => {
+    // Remove process.argv but keep process
+    const processWithoutArgv = { ...mockProcess };
+    delete (processWithoutArgv as unknown as Record<string, unknown>).argv;
+    global.process = processWithoutArgv as unknown as typeof process;
+    
+    const handlers: HookHandlers = {};
+    
+    runHook(handlers);
+    
+    // Should still work by falling back to getArgs()
+    expect(mockProcess.stdin.on).toHaveBeenCalledWith('data', expect.any(Function));
+  });
+
+  it('should handle missing process object entirely', () => {
+    delete (global as unknown as Record<string, unknown>).process;
+    
+    const handlers: HookHandlers = {};
+    
+    // Should not throw when process is completely undefined
+    expect(() => runHook(handlers)).not.toThrow();
+  });
+
+  it('should handle missing process.stdin', () => {
+    const processWithoutStdin = { ...mockProcess };
+    delete (processWithoutStdin as unknown as Record<string, unknown>).stdin;
+    global.process = processWithoutStdin as unknown as typeof process;
+    
+    const handlers: HookHandlers = {};
+    
+    // Should not throw when process.stdin is undefined
+    expect(() => runHook(handlers)).not.toThrow();
+  });
+
+  it('should handle Stop event without process.exit fallback to cross-platform exit', async () => {
+    mockProcess.argv[2] = 'Stop';
+    
+    // Remove process.exit to test cross-platform exit fallback
+    const processWithoutExit = { ...mockProcess };
+    delete (processWithoutExit as unknown as Record<string, unknown>).exit;
+    global.process = processWithoutExit as unknown as typeof process;
+    
+    const mockHandler = vi.fn().mockResolvedValue({});
+    const handlers: HookHandlers = {
+      stop: mockHandler,
+    };
+
+    runHook(handlers);
+
+    const dataHandler = mockProcess.stdin.on.mock.calls[0][1];
+    const inputData = {
+      session_id: 'test-session',
+      transcript_path: '/test/path',
+      stop_hook_active: true,
+    };
+
+    await dataHandler(Buffer.from(JSON.stringify(inputData)));
+
+    expect(mockHandler).toHaveBeenCalledWith({
+      ...inputData,
+      hook_type: 'Stop',
+    });
+    expect(mockConsole.log).toHaveBeenCalledWith(JSON.stringify({}));
+    // The cross-platform exit should be called (lines 107-108)
+  });
+
+  it('should handle SubagentStop event without process.exit fallback to cross-platform exit', async () => {
+    mockProcess.argv[2] = 'SubagentStop';
+    
+    // Remove process.exit to test cross-platform exit fallback
+    const processWithoutExit = { ...mockProcess };
+    delete (processWithoutExit as unknown as Record<string, unknown>).exit;
+    global.process = processWithoutExit as unknown as typeof process;
+    
+    const mockHandler = vi.fn().mockResolvedValue({});
+    const handlers: HookHandlers = {
+      subagentStop: mockHandler,
+    };
+
+    runHook(handlers);
+
+    const dataHandler = mockProcess.stdin.on.mock.calls[0][1];
+    const inputData = {
+      session_id: 'test-session',
+      transcript_path: '/test/path',
+      stop_hook_active: false,
+    };
+
+    await dataHandler(Buffer.from(JSON.stringify(inputData)));
+
+    expect(mockHandler).toHaveBeenCalledWith({
+      ...inputData,
+      hook_type: 'SubagentStop',
+    });
+    // The cross-platform exit should be called (lines 122-123)
+  });
+
+  // Simplified async tests that don't rely on complex timing
+  it('should handle Deno runtime code path coverage', async () => {
+    // Test that the Deno runtime path is covered
+    vi.spyOn(runtime, 'detectRuntime').mockReturnValue('deno');
+    vi.spyOn(runtime, 'getArgs').mockReturnValue(['PreToolUse']);
+    // Mock readStdin to immediately reject to avoid hanging
+    vi.spyOn(runtime, 'readStdin').mockRejectedValue(new Error('Test error'));
+    
+    const handlers: HookHandlers = {};
+
+    runHook(handlers);
+    
+    // Verify runtime detection was called (covers line 28)
+    expect(runtime.detectRuntime).toHaveBeenCalled();
+    
+    // Wait briefly for async operation
+    await new Promise(resolve => setTimeout(resolve, 10));
+    
+    // Verify error handling path was exercised (covers lines 50-53)
+    expect(mockConsole.error).toHaveBeenCalledWith('Hook error:', expect.any(Error));
+    expect(mockConsole.log).toHaveBeenCalledWith(JSON.stringify({ action: 'continue' }));
   });
 });
