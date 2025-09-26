@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import { z } from 'zod';
+import { z } from 'jsr:@npm/zod';
 import {
   validateHookInput,
   validateHookOutput,

@@ -2,7 +2,7 @@
  * Validation utilities for hook inputs and outputs
  */
 
-import { z } from 'zod';
+import { z } from 'jsr:@npm/zod';
 import { HookInputSchema, HookEventNameSchema } from '../schemas/hook-input-schemas.js';
 import { HookOutputSchema } from '../schemas/hook-output-schemas.js';
 import type { HookInput, HookInputMap } from '../types/hook-inputs.js';

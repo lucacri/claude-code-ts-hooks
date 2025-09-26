@@ -1,8 +1,11 @@
 {
   "name": "@lucacri/claude-code-ts-hooks",
+  "jsr": true,
+  "type": "module",
   "version": "1.0.0",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./helpers": "./src/hooks/helpers.ts"
   },
   "imports": {
     "zod": "https://deno.land/x/zod@v3.22.4/mod.ts"
