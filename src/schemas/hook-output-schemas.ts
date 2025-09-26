@@ -2,7 +2,7 @@
  * Zod schemas for runtime validation of hook outputs
  */
 
-import { z } from 'jsr:@npm/zod';
+import { z } from 'zod';
 
 /**
  * Base hook output schema

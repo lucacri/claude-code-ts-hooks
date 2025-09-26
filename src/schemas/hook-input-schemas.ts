@@ -2,7 +2,7 @@
  * Zod schemas for runtime validation of hook inputs
  */
 
-import { z } from 'jsr:@npm/zod';
+import { z } from 'zod';
 import { HookEventName } from '../types/base.js';
 
 /**
