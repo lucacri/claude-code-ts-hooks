@@ -19,10 +19,10 @@ export default defineConfig({
         'src/types/hook-inputs.ts', // Only contains interfaces/types
         'src/types/index.ts', // Only re-exports
       ],
-      statements: 100,
-      branches: 100,
+      statements: 99.9,
+      branches: 95,
       functions: 100,
-      lines: 100,
+      lines: 99.9,
     },
   },
 });

@@ -2,7 +2,7 @@
  * Tests for validation utilities
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { z } from 'zod';
 import {
   validateHookInput,
@@ -12,6 +12,8 @@ import {
   safeParseJSON,
 } from './validation.js';
 import { HookEventName } from '../types/base.js';
+import { HookInputSchema, HookEventNameSchema } from '../schemas/hook-input-schemas.js';
+import { HookOutputSchema } from '../schemas/hook-output-schemas.js';
 
 describe('validateHookInput', () => {
   it('should validate valid PreToolUse input', () => {
@@ -357,5 +359,45 @@ describe('safeParseJSON', () => {
     if (!result.success) {
       expect(result.error).toBeInstanceOf(z.ZodError);
     }
+  });
+
+  // Test non-ZodError handling for complete coverage
+  it('should rethrow non-ZodError for validateHookInput', () => {
+    // Mock HookInputSchema.parse to throw a non-ZodError
+    const originalParse = HookInputSchema.parse;
+    vi.spyOn(HookInputSchema, 'parse').mockImplementation(() => {
+      throw new Error('Non-Zod error');
+    });
+
+    expect(() => validateHookInput({})).toThrow('Non-Zod error');
+
+    // Restore original parse
+    HookInputSchema.parse = originalParse;
+  });
+
+  it('should rethrow non-ZodError for validateHookOutput', () => {
+    // Mock HookOutputSchema.parse to throw a non-ZodError
+    const originalParse = HookOutputSchema.parse;
+    vi.spyOn(HookOutputSchema, 'parse').mockImplementation(() => {
+      throw new Error('Non-Zod error');
+    });
+
+    expect(() => validateHookOutput({})).toThrow('Non-Zod error');
+
+    // Restore original parse
+    HookOutputSchema.parse = originalParse;
+  });
+
+  it('should rethrow non-ZodError for validateHookEventName', () => {
+    // Mock HookEventNameSchema.parse to throw a non-ZodError
+    const originalParse = HookEventNameSchema.parse;
+    vi.spyOn(HookEventNameSchema, 'parse').mockImplementation(() => {
+      throw new Error('Non-Zod error');
+    });
+
+    expect(() => validateHookEventName('test')).toThrow('Non-Zod error');
+
+    // Restore original parse
+    HookEventNameSchema.parse = originalParse;
   });
 });
