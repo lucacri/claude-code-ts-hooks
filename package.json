@@ -1,6 +1,6 @@
 {
   "name": "@lucacri/claude-code-ts-hooks",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "TypeScript types and utilities for Claude Code hooks - providing type safety for hook implementations",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

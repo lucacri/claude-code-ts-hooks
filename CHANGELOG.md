@@ -1,3 +1,9 @@
+## [1.1.1](https://github.com/lucacri/claude-code-ts-hooks/compare/v1.1.0...v1.1.1) (2025-09-27)
+
+### Bug Fixes
+
+* lower branches coverage threshold to 70% for realistic targets ([5ccde5f](https://github.com/lucacri/claude-code-ts-hooks/commit/5ccde5ff55d97c91024960a09b38a25b84d45619))
+
 ## [1.1.0](https://github.com/lucacri/claude-code-ts-hooks/compare/v1.0.0...v1.1.0) (2025-09-27)
 
 ### Features
