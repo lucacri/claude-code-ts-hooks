@@ -1,3 +1,9 @@
+## [1.1.0](https://github.com/lucacri/claude-code-ts-hooks/compare/v1.0.0...v1.1.0) (2025-09-27)
+
+### Features
+
+* drop Node.js 18.x and adjust test coverage thresholds ([8d1a50b](https://github.com/lucacri/claude-code-ts-hooks/commit/8d1a50b1a31fee9e9db7bde940eb07c6b1339eca))
+
 ## 1.0.0 (2025-09-27)
 
 ### ⚠ BREAKING CHANGES
