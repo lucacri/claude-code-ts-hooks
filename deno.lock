@@ -16,10 +16,14 @@
     "https://deno.land/x/zod@v3.22.4/types.ts": "724185522fafe43ee56a52333958764c8c8cd6ad4effa27b42651df873fc151e"
   },
   "workspace": {
+    "dependencies": [
+      "npm:zod@^3.22.4"
+    ],
     "packageJson": {
       "dependencies": [
         "npm:@semantic-release/changelog@^6.0.3",
         "npm:@semantic-release/commit-analyzer@12",
+        "npm:@semantic-release/exec@^7.1.0",
         "npm:@semantic-release/git@^10.0.1",
         "npm:@semantic-release/github@^10.0.3",
         "npm:@semantic-release/npm@^12.0.1",
@@ -30,11 +34,11 @@
         "npm:@vitest/coverage-v8@^1.6.1",
         "npm:conventional-changelog-conventionalcommits@^9.1.0",
         "npm:eslint@8",
-        "npm:semantic-release@^23.0.8",
+        "npm:semantic-release@^24.2.9",
         "npm:tsup@8",
         "npm:typescript@5",
         "npm:vitest@1",
-        "npm:zod@4"
+        "npm:zod@^3.22.4"
       ]
     }
   }

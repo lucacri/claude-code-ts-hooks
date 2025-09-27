@@ -53,13 +53,17 @@ export interface SubagentStopHookOutput extends BaseHookOutput {
 }
 
 /**
- * Output for UserPromptSubmit hook - can block prompt submission
+ * Output for UserPromptSubmit hook - can approve or block prompt submission
  */
 export interface UserPromptSubmitHookOutput extends BaseHookOutput {
-  /** Decision on whether to block the prompt submission */
-  decision?: 'block';
-  /** Reason for blocking */
+  /** Decision on whether to approve or block the prompt submission */
+  decision?: 'approve' | 'block';
+  /** Reason for the decision */
   reason?: string;
+  /** Additional context files to include */
+  contextFiles?: string[];
+  /** Updated version of the prompt */
+  updatedPrompt?: string;
   /** Hook-specific output data */
   hookSpecificOutput?: {
     /** Name of the hook event */
@@ -70,11 +74,13 @@ export interface UserPromptSubmitHookOutput extends BaseHookOutput {
 }
 
 /**
- * Output for PreCompact hook - typically no decision needed
+ * Output for PreCompact hook - can approve or block compaction
  */
 export interface PreCompactHookOutput extends BaseHookOutput {
-  /** Pre-compact hooks typically don't make decisions */
-  decision?: undefined;
+  /** Decision on whether to approve or block the compaction */
+  decision?: 'approve' | 'block';
+  /** Reason for the decision */
+  reason?: string;
 }
 
 /**
