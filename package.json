@@ -72,6 +72,7 @@
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^12.0.0",
+    "@semantic-release/exec": "^7.1.0",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^10.0.3",
     "@semantic-release/npm": "^12.0.1",
@@ -82,7 +83,7 @@
     "@vitest/coverage-v8": "^1.6.1",
     "conventional-changelog-conventionalcommits": "^9.1.0",
     "eslint": "^8.0.0",
-    "semantic-release": "^23.0.8",
+    "semantic-release": "^24.2.9",
     "tsup": "^8.0.0",
     "typescript": "^5.0.0",
     "vitest": "^1.0.0"
