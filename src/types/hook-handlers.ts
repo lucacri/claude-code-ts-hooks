@@ -11,7 +11,7 @@ import type {
   UserPromptSubmitPayload,
   PreCompactPayload,
   SessionStartPayload,
-} from './hook-payloads.js'
+} from './hook-payloads.ts'
 
 import type {
   PreToolUseResponse,
@@ -21,7 +21,7 @@ import type {
   UserPromptSubmitResponse,
   PreCompactResponse,
   SessionStartResponse,
-} from './hook-responses.js'
+} from './hook-responses.ts'
 
 // Simple handler types
 export type PreToolUseHandler = (payload: PreToolUsePayload) => Promise<PreToolUseResponse> | PreToolUseResponse

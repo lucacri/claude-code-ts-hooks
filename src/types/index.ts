@@ -3,16 +3,16 @@
  */
 
 // Base types
-export * from './base.js';
+export * from './base.ts';
 
 // Hook input types
-export * from './hook-inputs.js';
+export * from './hook-inputs.ts';
 
 // Hook output types
-export * from './hook-outputs.js';
+export * from './hook-outputs.ts';
 
 // Hook handler types
-export * from './hook-handler.js';
+export * from './hook-handler.ts';
 
 // Claude Code SDK types (if available)
-export * from './sdk.js';
+export * from './sdk.ts';

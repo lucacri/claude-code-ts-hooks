@@ -2,9 +2,9 @@
  * Export all utility functions
  */
 
-export * from './validation.js';
-export * from './type-guards.js';
-export * from './runtime.js';
+export * from './validation.ts';
+export * from './type-guards.ts';
+export * from './runtime.ts';
 
 // Re-export hook helpers
-export * from '../hooks/index.js';
+export * from '../hooks/index.ts';

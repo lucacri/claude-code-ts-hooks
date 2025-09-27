@@ -17,9 +17,9 @@ import {
   validateHookInputType,
   isHookInputLike,
   isHookOutputLike,
-} from './type-guards.js';
-import { HookEventName } from '../types/base.js';
-import type { HookInput } from '../types/hook-inputs.js';
+} from './type-guards.ts';
+import { HookEventName } from '../types/base.ts';
+import type { HookInput } from '../types/hook-inputs.ts';
 
 describe('isHookInputOfType', () => {
   const preToolUseInput: HookInput = {

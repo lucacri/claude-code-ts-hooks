@@ -10,10 +10,10 @@ import {
   validateHookEventName,
   parseHookInput,
   safeParseJSON,
-} from './validation.js';
-import { HookEventName } from '../types/base.js';
-import { HookInputSchema, HookEventNameSchema } from '../schemas/hook-input-schemas.js';
-import { HookOutputSchema } from '../schemas/hook-output-schemas.js';
+} from './validation.ts';
+import { HookEventName } from '../types/base.ts';
+import { HookInputSchema, HookEventNameSchema } from '../schemas/hook-input-schemas.ts';
+import { HookOutputSchema } from '../schemas/hook-output-schemas.ts';
 
 describe('validateHookInput', () => {
   it('should validate valid PreToolUse input', () => {

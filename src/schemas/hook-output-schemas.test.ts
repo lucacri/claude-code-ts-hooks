@@ -14,7 +14,7 @@ import {
   UserPromptSubmitHookOutputSchema,
   PreCompactHookOutputSchema,
   HookOutputSchema,
-} from './hook-output-schemas.js';
+} from './hook-output-schemas.ts';
 
 describe('BaseHookOutputSchema', () => {
   it('should validate valid base hook output', () => {

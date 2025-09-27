@@ -3,7 +3,7 @@
  */
 
 import { z } from 'zod';
-import { HookEventName } from '../types/base.js';
+import { HookEventName } from '../types/base.ts';
 
 /**
  * Base hook input schema

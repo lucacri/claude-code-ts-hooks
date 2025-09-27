@@ -8,10 +8,10 @@ import type {
   HookRegistry,
   HookExecutionResult,
   HookExecutionContext,
-} from '../types/hook-handler.js';
-import type { HookInput } from '../types/hook-inputs.js';
-import type { HookOutput } from '../types/hook-outputs.js';
-import type { HookEventName, HookConfig } from '../types/base.js';
+} from '../types/hook-handler.ts';
+import type { HookInput } from '../types/hook-inputs.ts';
+import type { HookOutput } from '../types/hook-outputs.ts';
+import type { HookEventName, HookConfig } from '../types/base.ts';
 
 /**
  * Creates a type-safe hook handler for a specific event type

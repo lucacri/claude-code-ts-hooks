@@ -2,9 +2,9 @@
  * Type guard utilities for runtime type checking
  */
 
-import type { HookInput, HookInputMap } from '../types/hook-inputs.js';
-import type { HookOutput } from '../types/hook-outputs.js';
-import { HookEventName } from '../types/base.js';
+import type { HookInput, HookInputMap } from '../types/hook-inputs.ts';
+import type { HookOutput } from '../types/hook-outputs.ts';
+import { HookEventName } from '../types/base.ts';
 
 /**
  * Type guard to check if a hook input matches a specific event type

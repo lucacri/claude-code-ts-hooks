@@ -7,9 +7,9 @@ import {
   withTimeout,
   createHookConfig,
   createHookOutput,
-} from './helpers.js';
-import { HookEventName } from '../types/base.js';
-import type { HookHandler } from '../types/hook-handler.js';
+} from './helpers.ts';
+import { HookEventName } from '../types/base.ts';
+import type { HookHandler } from '../types/hook-handler.ts';
 
 describe('createHookHandler', () => {
   it('should create handler for PreToolUse', () => {

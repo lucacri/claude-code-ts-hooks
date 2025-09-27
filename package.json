@@ -1,6 +1,6 @@
 {
   "name": "@lucacri/claude-code-ts-hooks",
-  "version": "0.0.0-development",
+  "version": "1.0.0",
   "description": "TypeScript types and utilities for Claude Code hooks - providing type safety for hook implementations",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -24,7 +24,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "test": "vitest",
+    "test": "vitest --run",
     "test:coverage": "vitest --coverage",
     "test:deno": "deno test --allow-read --allow-env src/",
     "test:bun": "bun test",
@@ -67,7 +67,7 @@
   },
   "homepage": "https://github.com/lucacri/claude-code-ts-hooks#readme",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://registry.npmjs.org"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
@@ -88,6 +88,6 @@
     "vitest": "^1.0.0"
   },
   "dependencies": {
-    "zod": "^4.0.0"
+    "zod": "^3.22.4"
   }
 }

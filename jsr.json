@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "license": "MIT",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./helpers": "./src/hooks/helpers.ts"
   },
   "publish": {
     "include": [

@@ -8,7 +8,7 @@
     "./helpers": "./src/hooks/helpers.ts"
   },
   "imports": {
-    "zod": "https://deno.land/x/zod@v3.22.4/mod.ts"
+    "zod": "npm:zod@^3.22.4"
   },
   "tasks": {
     "test": "deno test --allow-read --allow-env",
@@ -33,7 +33,6 @@
     }
   },
   "compilerOptions": {
-    "allowJs": false,
     "strict": true,
     "exactOptionalPropertyTypes": false,
     "noUncheckedIndexedAccess": true,

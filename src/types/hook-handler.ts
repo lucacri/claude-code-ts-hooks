@@ -2,9 +2,9 @@
  * Hook handler type definitions
  */
 
-import { HookInput, HookInputMap } from './hook-inputs.js';
-import { HookOutput, HookOutputMap } from './hook-outputs.js';
-import { HookEventName } from './base.js';
+import type { HookInput, HookInputMap } from './hook-inputs.ts';
+import type { HookOutput, HookOutputMap } from './hook-outputs.ts';
+import type { HookEventName } from './base.ts';
 
 /**
  * Generic hook handler function type

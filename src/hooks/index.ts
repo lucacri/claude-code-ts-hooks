@@ -2,4 +2,4 @@
  * Export hook-related functionality
  */
 
-export * from './helpers.js';
+export * from './helpers.ts';

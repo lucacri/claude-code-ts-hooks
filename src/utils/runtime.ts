@@ -4,6 +4,7 @@
  */
 
 // Type declarations for runtime globals
+// Note: Buffer type is available globally in all supported runtimes
 interface GlobalThisWithRuntimes {
   Deno?: {
     args: string[];
@@ -126,8 +127,9 @@ export async function readStdin(): Promise<string> {
         let data = '';
         proc.stdin.setEncoding('utf8');
         
-        proc.stdin.on('data', (chunk: Buffer) => {
-          data += chunk.toString();
+        proc.stdin.on('data', (chunk: any) => {
+          const text = chunk instanceof Uint8Array ? new TextDecoder().decode(chunk) : String(chunk)
+          data += text;
         });
         
         proc.stdin.on('end', () => {

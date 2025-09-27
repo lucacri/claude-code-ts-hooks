@@ -3,7 +3,8 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { detectRuntime, getArgs, getEnv, readStdin, exit } from './runtime.js';
+import { detectRuntime, getArgs, getEnv, readStdin, exit } from './runtime.ts';
+import { Buffer } from "node:buffer";
 
 describe('runtime utilities', () => {
   beforeEach(() => {

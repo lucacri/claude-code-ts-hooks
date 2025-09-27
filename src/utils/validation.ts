@@ -3,11 +3,11 @@
  */
 
 import { z } from 'zod';
-import { HookInputSchema, HookEventNameSchema } from '../schemas/hook-input-schemas.js';
-import { HookOutputSchema } from '../schemas/hook-output-schemas.js';
-import type { HookInput, HookInputMap } from '../types/hook-inputs.js';
-import type { HookOutput } from '../types/hook-outputs.js';
-import type { HookEventName } from '../types/base.js';
+import { HookInputSchema, HookEventNameSchema } from '../schemas/hook-input-schemas.ts';
+import { HookOutputSchema } from '../schemas/hook-output-schemas.ts';
+import type { HookInput, HookInputMap } from '../types/hook-inputs.ts';
+import type { HookOutput } from '../types/hook-outputs.ts';
+import type { HookEventName } from '../types/base.ts';
 
 /**
  * Validation result type

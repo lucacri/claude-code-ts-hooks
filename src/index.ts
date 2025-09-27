@@ -25,7 +25,7 @@
  */
 
 // Export the main hook runner
-export { runHook, log } from './run-hook.js';
+export { runHook, log } from './run-hook.ts';
 
 // Export simple types
 export type {
@@ -40,7 +40,7 @@ export type {
   PreCompactPayload,
   SessionStartPayload,
   HookPayload,
-} from './types/hook-payloads.js';
+} from './types/hook-payloads.ts';
 
 // Export response types
 export type {
@@ -52,7 +52,7 @@ export type {
   PreCompactResponse,
   SessionStartResponse,
   HookResponse,
-} from './types/hook-responses.js';
+} from './types/hook-responses.ts';
 
 // Export handler types
 export type {
@@ -65,11 +65,11 @@ export type {
   PreCompactHandler,
   SessionStartHandler,
   HookHandlers,
-} from './types/hook-handlers.js';
+} from './types/hook-handlers.ts';
 
 // Export validation utilities (keep the useful parts)
-export * from './utils/index.js';
-export * from './schemas/index.js';
+export * from './utils/index.ts';
+export * from './schemas/index.ts';
 
 // Package version and metadata
 export const VERSION = '1.0.0';

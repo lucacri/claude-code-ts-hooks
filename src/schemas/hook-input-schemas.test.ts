@@ -14,8 +14,8 @@ import {
   PreCompactHookInputSchema,
   HookInputSchema,
   HookEventNameSchema,
-} from './hook-input-schemas.js';
-import { HookEventName } from '../types/base.js';
+} from './hook-input-schemas.ts';
+import { HookEventName } from '../types/base.ts';
 
 describe('BaseHookInputSchema', () => {
   it('should validate valid base hook input', () => {

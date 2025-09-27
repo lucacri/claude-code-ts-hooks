@@ -2,7 +2,7 @@
  * Hook output type definitions for all Claude Code hook events
  */
 
-import { BaseHookOutput, HookDecision, HookEventName } from './base.js';
+import type { BaseHookOutput, HookDecision, HookEventName } from './base.ts';
 
 /**
  * Output for PreToolUse hook - can approve or block tool execution

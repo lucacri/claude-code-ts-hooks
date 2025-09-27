@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import * as exports from './index.js';
+import * as exports from './index.ts';
 
 describe('index exports', () => {
   it('should export runHook function', () => {

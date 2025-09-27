@@ -1,9 +1,1 @@
-{
-  "extends": "./tsconfig.json",
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.test.ts",
-    "**/*.spec.ts"
-  ]
-}
+{"extends": "./tsconfig.json", "compilerOptions": {"allowImportingTsExtensions": true}, "exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]}

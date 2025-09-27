@@ -3,9 +3,11 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { runHook, log } from './run-hook.js';
-import type { HookHandlers } from './types/hook-handlers.js';
-import * as runtime from './utils/runtime.js';
+import { runHook, log } from './run-hook.ts';
+import type { HookHandlers } from './types/hook-handlers.ts';
+import * as runtime from './utils/runtime.ts';
+import type process from "node:process";
+import { Buffer } from "node:buffer";
 
 // Mock process for testing
 const mockProcess = {
@@ -63,14 +65,14 @@ describe('runHook', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    originalProcess = global.process;
-    global.process = mockProcess as unknown as typeof process;
+    originalProcess = globalThis.process;
+    globalThis.process = mockProcess as unknown as typeof process;
     vi.spyOn(console, 'log').mockImplementation(mockConsole.log);
     vi.spyOn(console, 'error').mockImplementation(mockConsole.error);
   });
 
   afterEach(() => {
-    global.process = originalProcess;
+    globalThis.process = originalProcess;
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
@@ -80,7 +82,17 @@ describe('runHook', () => {
     
     runHook(handlers);
     
-    expect(mockProcess.stdin.on).toHaveBeenCalledWith('data', expect.any(Function));
+    // Verify that the data listener is added for stdin
+    expect(mockProcess.stdin.on).toHaveBeenCalled();
+    
+    // Get the data handler function that was registered
+    const dataHandlerCall = mockProcess.stdin.on.mock.calls.find(call => call[0] === 'data');
+    expect(dataHandlerCall).toBeDefined();
+    
+    // Ensure the handler function was registered properly
+    if (dataHandlerCall) {
+      expect(typeof dataHandlerCall[1]).toBe('function');
+    }
   });
 
   it('should handle PreToolUse event', async () => {
@@ -426,7 +438,7 @@ describe('runHook', () => {
     // Remove process.argv but keep process
     const processWithoutArgv = { ...mockProcess };
     delete (processWithoutArgv as unknown as Record<string, unknown>).argv;
-    global.process = processWithoutArgv as unknown as typeof process;
+    globalThis.process = processWithoutArgv as unknown as typeof process;
     
     const handlers: HookHandlers = {};
     
@@ -437,7 +449,7 @@ describe('runHook', () => {
   });
 
   it('should handle missing process object entirely', () => {
-    delete (global as unknown as Record<string, unknown>).process;
+    delete (globalThis as unknown as Record<string, unknown>).process;
     
     const handlers: HookHandlers = {};
     
@@ -448,7 +460,7 @@ describe('runHook', () => {
   it('should handle missing process.stdin', () => {
     const processWithoutStdin = { ...mockProcess };
     delete (processWithoutStdin as unknown as Record<string, unknown>).stdin;
-    global.process = processWithoutStdin as unknown as typeof process;
+    globalThis.process = processWithoutStdin as unknown as typeof process;
     
     const handlers: HookHandlers = {};
     
@@ -462,7 +474,7 @@ describe('runHook', () => {
     // Remove process.exit to test cross-platform exit fallback
     const processWithoutExit = { ...mockProcess };
     delete (processWithoutExit as unknown as Record<string, unknown>).exit;
-    global.process = processWithoutExit as unknown as typeof process;
+    globalThis.process = processWithoutExit as unknown as typeof process;
     
     const mockHandler = vi.fn().mockResolvedValue({});
     const handlers: HookHandlers = {
@@ -494,7 +506,7 @@ describe('runHook', () => {
     // Remove process.exit to test cross-platform exit fallback
     const processWithoutExit = { ...mockProcess };
     delete (processWithoutExit as unknown as Record<string, unknown>).exit;
-    global.process = processWithoutExit as unknown as typeof process;
+    globalThis.process = processWithoutExit as unknown as typeof process;
     
     const mockHandler = vi.fn().mockResolvedValue({});
     const handlers: HookHandlers = {

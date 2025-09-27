@@ -2,7 +2,7 @@
  * Hook input type definitions for all Claude Code hook events
  */
 
-import { BaseHookInput, ToolInput, ToolResponse, HookEventName } from './base.js';
+import type { BaseHookInput, ToolInput, ToolResponse, HookEventName } from './base.ts';
 
 /**
  * Input for PreToolUse hook - triggered before a tool is executed
