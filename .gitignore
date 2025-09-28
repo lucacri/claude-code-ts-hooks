@@ -35,6 +35,9 @@ coverage/
 *.temp
 temp/
 tmp/
+.code/
+.panda/
+.claude/
 
 # Logs
 logs/

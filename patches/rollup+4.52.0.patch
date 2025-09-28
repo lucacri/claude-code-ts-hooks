@@ -1,0 +1,27 @@
+diff --git a/node_modules/rollup/dist/native.js b/node_modules/rollup/dist/native.js
+index bea730a..5de29ad 100644
+--- a/node_modules/rollup/dist/native.js
++++ b/node_modules/rollup/dist/native.js
+@@ -77,9 +77,19 @@ const requireWithFriendlyError = id => {
+ 	}
+ };
+ 
+-const { parse, parseAsync, xxhashBase64Url, xxhashBase36, xxhashBase16 } = requireWithFriendlyError(
+-	existsSync(path.join(__dirname, localName)) ? localName : `@rollup/rollup-${packageBase}`
+-);
++let bindings;
++try {
++	bindings = requireWithFriendlyError(
++		existsSync(path.join(__dirname, localName)) ? localName : `@rollup/rollup-${packageBase}`
++	);
++} catch (error) {
++	try {
++		bindings = require('@rollup/wasm-node');
++	} catch {
++		throw error;
++	}
++}
++const { parse, parseAsync, xxhashBase64Url, xxhashBase36, xxhashBase16 } = bindings;
+ 
+ function getPackageBase() {
+ 	const imported = bindingsByPlatformAndArch[platform]?.[arch];

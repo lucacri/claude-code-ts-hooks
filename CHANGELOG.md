@@ -1,5 +1,9 @@
 ## [1.1.2](https://github.com/lucacri/claude-code-ts-hooks/compare/v1.1.1...v1.1.2) (2025-09-27)
 
+### Notes
+
+* **package:** Clarified that the first public npm release ships unscoped as `claude-code-ts-hooks`, while Deno/JSR stay scoped as `@lucacri/claude-code-ts-hooks` to match earlier planning.
+
 ### Bug Fixes
 
 * **schemas:** add explicit type annotations for JSR compliance ([2b5cbaf](https://github.com/lucacri/claude-code-ts-hooks/commit/2b5cbafd319e754f7b52df62716eec02a3745bc1))

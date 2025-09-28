@@ -23,6 +23,8 @@ This package provides comprehensive TypeScript support for [Claude Code](https:/
 
 ## Installation & Usage
 
+> **Naming note:** On npm the package is published as `claude-code-ts-hooks` (unscoped), while the Deno/JSR distribution remains scoped as `@lucacri/claude-code-ts-hooks`.
+
 ### Node.js (NPM/Yarn/PNPM)
 
 ```bash
@@ -39,7 +41,13 @@ pnpm add claude-code-ts-hooks
 
 ### Deno
 
-**No installation required!** Use directly from source:
+Import the scoped package directly from JSR:
+
+```typescript
+import { runHook, log, type HookHandlers } from 'jsr:@lucacri/claude-code-ts-hooks';
+```
+
+Or use the source distribution when you need a specific revision:
 
 ```typescript
 import { runHook, log, type HookHandlers } from 'https://deno.land/x/claude_code_ts_hooks/src/index.ts';
@@ -423,6 +431,8 @@ Published to NPM for Node.js users:
 npm install claude-code-ts-hooks
 ```
 
+> The npm release uses the unscoped name `claude-code-ts-hooks`; earlier planning documents referenced a scoped variant, but the first public npm publish will be unscoped.
+
 ### JSR (Deno)
 
 The package can be published to JSR (JavaScript Registry) for Deno:
@@ -431,7 +441,7 @@ The package can be published to JSR (JavaScript Registry) for Deno:
 deno publish
 ```
 
-Deno users can import directly:
+Deno users can import directly using the scoped name:
 ```typescript
 import { runHook } from "jsr:@lucacri/claude-code-ts-hooks";
 ```
