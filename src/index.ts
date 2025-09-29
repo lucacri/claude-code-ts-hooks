@@ -71,6 +71,9 @@ export type {
 export * from './utils/index.ts';
 export * from './schemas/index.ts';
 
+// Export types from utils
+export type { RuntimeInfo } from './utils/runtime.ts';
+
 // Package version and metadata
-export const VERSION = '1.1.2';
+export const VERSION = '1.4.0';
 export const PACKAGE_NAME = 'claude-code-ts-hooks';

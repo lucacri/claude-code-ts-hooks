@@ -29,6 +29,9 @@ interface GlobalThisWithRuntimes {
     };
     exit(code?: number): never;
     env: Record<string, string | undefined>;
+    version?: string;
+    platform?: string;
+    arch?: string;
     versions?: {
       node: string;
     };
@@ -181,7 +184,7 @@ export function exit(code: number = 0): void {
 export function getEnv(key: string): string | undefined {
   const runtime = detectRuntime();
   const global = globalThis as GlobalThisWithRuntimes;
-  
+
   switch (runtime) {
     case 'deno':
       return global.Deno?.env?.get(key);
@@ -191,4 +194,68 @@ export function getEnv(key: string): string | undefined {
     default:
       return undefined;
   }
+}
+
+/**
+ * Runtime information interface
+ */
+export interface RuntimeInfo {
+  runtime: Runtime;
+  version?: string;
+  platform?: string;
+  arch?: string;
+  nodeVersion?: string;
+  hasBuffer: boolean;
+  supportsStdin: boolean;
+  supportsEnvVars: boolean;
+}
+
+/**
+ * Get comprehensive runtime information for debugging and diagnostics
+ */
+export function getRuntimeInfo(): RuntimeInfo {
+  const runtime = detectRuntime();
+  const global = globalThis as GlobalThisWithRuntimes;
+
+  const info: RuntimeInfo = {
+    runtime,
+    hasBuffer: typeof (globalThis as any).Buffer !== 'undefined',
+    supportsStdin: false,
+    supportsEnvVars: false,
+  };
+
+  switch (runtime) {
+    case 'deno':
+      info.version = (global.Deno as any)?.version?.deno;
+      info.platform = (global.Deno as any)?.build?.os;
+      info.arch = (global.Deno as any)?.build?.arch;
+      info.supportsStdin = !!(global.Deno?.stdin?.readable);
+      info.supportsEnvVars = !!(global.Deno?.env);
+      break;
+
+    case 'bun':
+      info.version = (global.Bun as any)?.version;
+      info.platform = global.process?.platform;
+      info.arch = global.process?.arch;
+      info.supportsStdin = !!(global.process?.stdin);
+      info.supportsEnvVars = !!(global.process?.env);
+      break;
+
+    case 'node':
+      info.version = global.process?.version;
+      info.nodeVersion = global.process?.versions?.node;
+      info.platform = global.process?.platform;
+      info.arch = global.process?.arch;
+      info.supportsStdin = !!(global.process?.stdin);
+      info.supportsEnvVars = !!(global.process?.env);
+      break;
+
+    default:
+      // For unknown runtimes, try to detect basic capabilities
+      info.supportsStdin = !!(global.process?.stdin);
+      info.supportsEnvVars = !!(global.process?.env || global.Deno?.env);
+      break;
+  }
+
+  return info;
 }
