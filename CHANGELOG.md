@@ -1,3 +1,14 @@
+## [1.2.0](https://github.com/lucacri/claude-code-ts-hooks/compare/v1.1.2...v1.2.0) (2025-09-29)
+
+### Features
+
+* add Deno runtime support and patch management system ([1771ed2](https://github.com/lucacri/claude-code-ts-hooks/commit/1771ed2a7b756a4ad4c5b100aa200b1ba0d9e18a))
+
+### Bug Fixes
+
+* publish unscoped package with rollup fallback ([0589d7f](https://github.com/lucacri/claude-code-ts-hooks/commit/0589d7fed22c2b20a7c3eefa46e7f69eff650c06))
+* **test:** exclude .panda directory from vitest execution ([a1b9e71](https://github.com/lucacri/claude-code-ts-hooks/commit/a1b9e718bacf61446c73d7226fe2372ca3ccfe1c))
+
 ## [1.1.2](https://github.com/lucacri/claude-code-ts-hooks/compare/v1.1.1...v1.1.2) (2025-09-27)
 
 ### Notes
