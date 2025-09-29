@@ -2,7 +2,7 @@
   "name": "@lucacri/claude-code-ts-hooks",
   "jsr": true,
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.1.2",
   "exports": {
     ".": "./src/index.ts",
     "./helpers": "./src/hooks/helpers.ts"
@@ -36,7 +36,8 @@
     "strict": true,
     "exactOptionalPropertyTypes": false,
     "noUncheckedIndexedAccess": true,
-    "lib": ["ES2020", "DOM"]
+    "lib": ["ES2020", "DOM"],
+    "types": ["npm:@types/node/globals"]
   },
   "publish": {
     "include": [

@@ -7,16 +7,15 @@ import type { HookHandlers } from './types/hook-handlers.ts'
 import type { HookPayload } from './types/hook-payloads.ts'
 import { getArgs, readStdin, exit, detectRuntime } from './utils/runtime.ts'
 
+type BufferCtor = typeof import('node:buffer').Buffer;
+
 // Cross-platform Buffer handling
-function getBuffer(): typeof Buffer {
-  const runtime = detectRuntime()
-  if (runtime === 'node' && typeof process !== 'undefined') {
-    // In Node.js, use the global Buffer which is available
-    return Buffer
-  } else {
-    // In Deno and Bun, Buffer is also available globally
-    return globalThis.Buffer as typeof Buffer
+function getBuffer(): BufferCtor {
+  const bufferCtor = (globalThis as { Buffer?: BufferCtor }).Buffer
+  if (!bufferCtor) {
+    throw new Error('Buffer is not available in this runtime')
   }
+  return bufferCtor
 }
 
 // Logging utility

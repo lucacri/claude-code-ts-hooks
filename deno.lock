@@ -1,5 +1,20 @@
 {
   "version": "5",
+  "specifiers": {
+    "jsr:@std/assert@*": "1.0.14",
+    "jsr:@std/internal@^1.0.10": "1.0.10"
+  },
+  "jsr": {
+    "@std/assert@1.0.14": {
+      "integrity": "68d0d4a43b365abc927f45a9b85c639ea18a9fab96ad92281e493e4ed84abaa4",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/internal@1.0.10": {
+      "integrity": "e3be62ce42cab0e177c27698e5d9800122f67b766a0bea6ca4867886cbde8cf7"
+    }
+  },
   "remote": {
     "https://deno.land/x/zod@v3.22.4/ZodError.ts": "4de18ff525e75a0315f2c12066b77b5c2ae18c7c15ef7df7e165d63536fdf2ea",
     "https://deno.land/x/zod@v3.22.4/errors.ts": "5285922d2be9700cc0c70c95e4858952b07ae193aa0224be3cbd5cd5567eabef",
@@ -17,10 +32,12 @@
   },
   "workspace": {
     "dependencies": [
+      "npm:@types/node@*",
       "npm:zod@^3.22.4"
     ],
     "packageJson": {
       "dependencies": [
+        "npm:@rollup/wasm-node@^4.52.0",
         "npm:@semantic-release/changelog@^6.0.3",
         "npm:@semantic-release/commit-analyzer@12",
         "npm:@semantic-release/exec@^7.1.0",
@@ -34,6 +51,7 @@
         "npm:@vitest/coverage-v8@^1.6.1",
         "npm:conventional-changelog-conventionalcommits@^9.1.0",
         "npm:eslint@8",
+        "npm:patch-package@8",
         "npm:semantic-release@^24.2.9",
         "npm:tsup@8",
         "npm:typescript@5",

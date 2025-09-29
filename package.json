@@ -16,8 +16,8 @@
   "files": [
     "dist/**/*",
     "src/**/*",
-    "examples/**/*",
     "deno.json",
+    "scripts/apply-patches.js",
     "README.md",
     "LICENSE"
   ],
@@ -26,8 +26,9 @@
     "dev": "tsup --watch",
     "test": "vitest --run",
     "test:coverage": "vitest --coverage",
-    "test:deno": "deno test --allow-read --allow-env src/",
-    "test:bun": "bun test",
+    "test:deno": "npx -y deno test --allow-read --allow-env deno/tests",
+    "test:bun": "bun x vitest run",
+    "test:all": "npm run test && npm run test:deno && npm run test:bun",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
     "lint:deno": "deno lint src/",
@@ -36,7 +37,7 @@
     "example:node": "node examples/simple-hooks.ts",
     "example:deno": "deno run --allow-read --allow-env examples/simple-hooks-deno.ts",
     "example:bun": "bun run examples/simple-hooks-bun.ts",
-    "postinstall": "patch-package",
+    "postinstall": "node scripts/apply-patches.js",
     "prepublishOnly": "npm run build",
     "release": "semantic-release"
   },

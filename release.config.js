@@ -21,7 +21,7 @@ module.exports = {
     }],
     // Publish to JSR after successful release
     ['@semantic-release/exec', {
-      publishCmd: 'npx jsr publish --allow-dirty'
+      publishCmd: 'node scripts/publish-jsr.js'
     }]
   ]
 };

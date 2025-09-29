@@ -471,6 +471,8 @@ import { runHook } from "./src/index.ts";
 
 Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
+If you touch the build system, follow the [Rollup patch maintenance guide](docs/rollup-patch-maintenance.md) to keep the `patch-package` fallback in sync with upstream releases.
+
 ## License
 
 MIT License - see the [LICENSE](LICENSE) file for details.

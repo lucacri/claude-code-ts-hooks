@@ -42,3 +42,11 @@ tmp/
 # Logs
 logs/
 *.log
+
+# Panda distributed and runtime files
+.panda/system/
+.panda/claude-file.md
+.panda/runtime/
+.panda/workspace/temps/
+.panda/workspace/contexts/README.md
+.panda/workspace/command-notes/README.md

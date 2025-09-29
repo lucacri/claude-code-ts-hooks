@@ -3,8 +3,10 @@
  * Provides compatibility layer for Node.js, Deno, and Bun
  */
 
+type BufferCtor = typeof import('node:buffer').Buffer;
+
 // Type declarations for runtime globals
-// Note: Buffer type is available globally in all supported runtimes
+// Buffer is surfaced via Node, Bun, or Deno's bare Node builtins flag
 interface GlobalThisWithRuntimes {
   Deno?: {
     args: string[];
@@ -22,7 +24,7 @@ interface GlobalThisWithRuntimes {
   process?: {
     argv: string[];
     stdin: {
-      on(event: string, listener: (data: Buffer) => void): void;
+      on(event: string, listener: (data: BufferCtor) => void): void;
       setEncoding(encoding: string): void;
     };
     exit(code?: number): never;
