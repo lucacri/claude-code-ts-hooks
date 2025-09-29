@@ -1,3 +1,9 @@
+## [1.4.0](https://github.com/lucacri/claude-code-ts-hooks/compare/v1.3.0...v1.4.0) (2025-09-29)
+
+### Features
+
+* add comprehensive runtime information utility ([11aed34](https://github.com/lucacri/claude-code-ts-hooks/commit/11aed3491ef9f8bb353ad30113fe0a47062d0265))
+
 ## [1.2.0](https://github.com/lucacri/claude-code-ts-hooks/compare/v1.1.2...v1.2.0) (2025-09-29)
 
 ### Features
