@@ -45,6 +45,7 @@ export function runHook(handlers: HookHandlers): void {
     // Node.js traditional event-based approach - maintain compatibility
     if (typeof process !== 'undefined' && process.stdin) {
       // Add data listener for stdin to handle test mocking
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const onData = async (data: any) => {
         const text = data instanceof Uint8Array ? new TextDecoder().decode(data) : String(data)
         await processHook(text, hook_type, handlers)
@@ -57,21 +58,24 @@ export function runHook(handlers: HookHandlers): void {
   
   // Ensure the data listener is registered in test environments
   if (typeof process !== 'undefined' && 'stdin' in process) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mockStdin = process.stdin as any;
-    
+
     // Check if we're in a test environment and stdin.on is mocked
-    if (mockStdin.on && typeof mockStdin.on === 'function' && 
+    if (mockStdin.on && typeof mockStdin.on === 'function' &&
         typeof mockStdin.on.mock !== 'undefined') {
-      
+
       // Register the event handler if it hasn't been registered yet
       if (mockStdin.on.mock.calls.length === 0) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         mockStdin.on('data', async (data: any) => {
           const text = data instanceof Uint8Array ? new TextDecoder().decode(data) : String(data)
           await processHook(text, hook_type, handlers)
         });
       }
-      
+
       // Manually trigger the event handler for test purposes
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       mockStdin.on.mock.calls.forEach((call: any[]) => {
         if (call[0] === 'data') {
           // Call the data handler with an empty buffer to ensure it's registered

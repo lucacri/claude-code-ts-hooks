@@ -30,7 +30,7 @@
     "test:deno": "npx -y deno test --allow-read --allow-env deno/tests",
     "test:bun": "bun x vitest run",
     "test:all": "npm run test && npm run test:deno && npm run test:bun",
-    "lint": "eslint src --ext .ts",
+    "lint": "eslint src --ext .ts --max-warnings 0",
     "lint:fix": "eslint src --ext .ts --fix",
     "lint:deno": "deno lint src/",
     "check:deno": "deno check src/index.ts",

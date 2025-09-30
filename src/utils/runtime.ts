@@ -131,7 +131,8 @@ export async function readStdin(): Promise<string> {
       return new Promise((resolve, reject) => {
         let data = '';
         proc.stdin.setEncoding('utf8');
-        
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         proc.stdin.on('data', (chunk: any) => {
           const text = chunk instanceof Uint8Array ? new TextDecoder().decode(chunk) : String(chunk)
           data += text;
@@ -219,6 +220,7 @@ export function getRuntimeInfo(): RuntimeInfo {
 
   const info: RuntimeInfo = {
     runtime,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     hasBuffer: typeof (globalThis as any).Buffer !== 'undefined',
     supportsStdin: false,
     supportsEnvVars: false,
@@ -226,14 +228,18 @@ export function getRuntimeInfo(): RuntimeInfo {
 
   switch (runtime) {
     case 'deno':
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       info.version = (global.Deno as any)?.version?.deno;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       info.platform = (global.Deno as any)?.build?.os;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       info.arch = (global.Deno as any)?.build?.arch;
       info.supportsStdin = !!(global.Deno?.stdin?.readable);
       info.supportsEnvVars = !!(global.Deno?.env);
       break;
 
     case 'bun':
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       info.version = (global.Bun as any)?.version;
       info.platform = global.process?.platform;
       info.arch = global.process?.arch;
