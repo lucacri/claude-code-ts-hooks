@@ -1,3 +1,9 @@
+## [1.5.0](https://github.com/lucacri/claude-code-ts-hooks/compare/v1.4.0...v1.5.0) (2025-09-30)
+
+### Features
+
+* complete alignment with Anthropic hooks documentation ([df447e0](https://github.com/lucacri/claude-code-ts-hooks/commit/df447e00ac69e07e8b5bf60e44e0f071162e4466))
+
 ## [1.4.0](https://github.com/lucacri/claude-code-ts-hooks/compare/v1.3.0...v1.4.0) (2025-09-29)
 
 ### Features
