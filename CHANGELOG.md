@@ -1,3 +1,9 @@
+## [1.6.0](https://github.com/lucacri/claude-code-ts-hooks/compare/v1.5.0...v1.6.0) (2025-09-30)
+
+### Features
+
+* **hooks:** add automated pre-commit quality checks ([4470f33](https://github.com/lucacri/claude-code-ts-hooks/commit/4470f3364eec50166e3965e6c1e8564d9b19c444))
+
 ## [1.5.0](https://github.com/lucacri/claude-code-ts-hooks/compare/v1.4.0...v1.5.0) (2025-09-30)
 
 ### Features
