@@ -28,6 +28,7 @@ describe('isHookInputOfType', () => {
     hook_event_name: HookEventName.PreToolUse,
     tool_name: 'test-tool',
     tool_input: { param: 'value' },
+    cwd: '/test/cwd',
   };
 
   const postToolUseInput: HookInput = {
@@ -37,6 +38,7 @@ describe('isHookInputOfType', () => {
     tool_name: 'test-tool',
     tool_input: { param: 'value' },
     tool_response: { result: 'success' },
+    cwd: '/test/cwd',
   };
 
   it('should return true for matching hook type', () => {
@@ -58,6 +60,7 @@ describe('isValidHookInputOfType', () => {
       hook_event_name: HookEventName.PreToolUse,
       tool_name: 'test-tool',
       tool_input: { param: 'value' },
+      cwd: '/test/cwd',
     };
 
     expect(isValidHookInputOfType(input, HookEventName.PreToolUse)).toBe(true);
@@ -114,12 +117,12 @@ describe('specific type guards', () => {
       transcript_path: '/test/path',
       hook_event_name: hookEventName,
       // Add default required fields for each type
-      ...(hookEventName === HookEventName.PreToolUse && { tool_name: 'test', tool_input: {} }),
-      ...(hookEventName === HookEventName.PostToolUse && { tool_name: 'test', tool_input: {}, tool_response: {} }),
-      ...(hookEventName === HookEventName.Notification && { message: 'test' }),
+      ...(hookEventName === HookEventName.PreToolUse && { tool_name: 'test', tool_input: {}, cwd: '/test/cwd' }),
+      ...(hookEventName === HookEventName.PostToolUse && { tool_name: 'test', tool_input: {}, tool_response: {}, cwd: '/test/cwd' }),
+      ...(hookEventName === HookEventName.Notification && { message: 'test', cwd: '/test/cwd' }),
       ...(hookEventName === HookEventName.Stop && { stop_hook_active: true }),
       ...(hookEventName === HookEventName.SubagentStop && { stop_hook_active: false }),
-      ...(hookEventName === HookEventName.UserPromptSubmit && { prompt: 'test' }),
+      ...(hookEventName === HookEventName.UserPromptSubmit && { prompt: 'test', cwd: '/test/cwd' }),
       ...(hookEventName === HookEventName.PreCompact && { trigger: 'manual' as const, custom_instructions: 'test' }),
       ...extraFields,
     };
@@ -276,6 +279,7 @@ describe('validateHookInputType', () => {
       hook_event_name: HookEventName.PreToolUse,
       tool_name: 'test-tool',
       tool_input: { param: 'value' },
+      cwd: '/test/cwd',
     };
 
     const result = validateHookInputType(input, HookEventName.PreToolUse);

@@ -467,6 +467,31 @@ import { runHook } from "./src/index.ts";
 import { runHook } from "./src/index.ts";
 ```
 
+## Development
+
+### Pre-commit Hooks
+
+This project uses pre-commit hooks to ensure code quality. The hooks are automatically installed when you run `npm install`.
+
+The pre-commit hook runs:
+- TypeScript type checking (`npm run typecheck`)
+- ESLint linting (`npm run lint`)
+- Vitest tests (`npm test`)
+- Build verification (`npm run build`)
+- JSR validation (slow types check)
+
+**Manual Setup:**
+```bash
+npm run setup-hooks
+```
+
+**Skip Hooks (Emergency Only):**
+```bash
+git commit --no-verify
+```
+
+⚠️ **Note:** Skipping hooks should be avoided as it may push broken code to CI/CD.
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.

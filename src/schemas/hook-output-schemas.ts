@@ -48,7 +48,11 @@ export const BaseHookOutputSchema: HookOutputObjectSchema<
 export const HookDecisionSchema: z.ZodEnum<['approve', 'block']> =
   z.enum(['approve', 'block']) satisfies z.ZodType<HookDecision>;
 
-const preToolUseHookSpecificOutputSchema = z.object({
+const preToolUseHookSpecificOutputSchema: z.ZodObject<{
+  hookEventName: z.ZodLiteral<'PreToolUse'>;
+  permissionDecision: z.ZodOptional<z.ZodEnum<['allow', 'deny', 'ask']>>;
+  permissionDecisionReason: z.ZodOptional<z.ZodString>;
+}> = z.object({
   hookEventName: z.literal('PreToolUse'),
   permissionDecision: z.enum(['allow', 'deny', 'ask']).optional(),
   permissionDecisionReason: z.string().optional(),
@@ -74,7 +78,10 @@ export const PreToolUseHookOutputSchema: HookOutputObjectSchema<
 
 type BlockDecisionShape = z.ZodLiteral<'block'>;
 
-const postToolUseHookSpecificOutputSchema = z.object({
+const postToolUseHookSpecificOutputSchema: z.ZodObject<{
+  hookEventName: z.ZodLiteral<'PostToolUse'>;
+  additionalContext: z.ZodOptional<z.ZodString>;
+}> = z.object({
   hookEventName: z.literal('PostToolUse'),
   additionalContext: z.string().optional(),
 });
@@ -146,7 +153,10 @@ export const SubagentStopHookOutputSchema: HookOutputObjectSchema<
 > =
   z.object(subagentStopHookOutputShape) satisfies z.ZodType<SubagentStopHookOutput>;
 
-const userPromptSubmitHookSpecificOutputSchema = z.object({
+const userPromptSubmitHookSpecificOutputSchema: z.ZodObject<{
+  hookEventName: z.ZodLiteral<'UserPromptSubmit'>;
+  additionalContext: z.ZodOptional<z.ZodString>;
+}> = z.object({
   hookEventName: z.literal('UserPromptSubmit'),
   additionalContext: z.string().optional(),
 });
@@ -182,7 +192,10 @@ export const PreCompactHookOutputSchema: HookOutputObjectSchema<
 > =
   z.object(preCompactHookOutputShape) satisfies z.ZodType<PreCompactHookOutput>;
 
-const sessionStartHookSpecificOutputSchema = z.object({
+const sessionStartHookSpecificOutputSchema: z.ZodObject<{
+  hookEventName: z.ZodLiteral<'SessionStart'>;
+  additionalContext: z.ZodOptional<z.ZodString>;
+}> = z.object({
   hookEventName: z.literal('SessionStart'),
   additionalContext: z.string().optional(),
 });

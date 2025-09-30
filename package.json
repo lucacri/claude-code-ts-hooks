@@ -38,7 +38,7 @@
     "example:node": "node examples/simple-hooks.ts",
     "example:deno": "deno run --allow-read --allow-env examples/simple-hooks-deno.ts",
     "example:bun": "bun run examples/simple-hooks-bun.ts",
-    "postinstall": "node scripts/apply-patches.js",
+    "postinstall": "node scripts/apply-patches.js && bash scripts/setup-hooks.sh",
     "prepublishOnly": "npm run build",
     "release": "semantic-release"
   },
