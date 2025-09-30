@@ -24,6 +24,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
+    "update-docs": "wget https://docs.claude.com/en/docs/claude-code/hooks.md -O ./docs/anthropic-hooks-documentation.md",
     "test": "vitest --run",
     "test:coverage": "vitest --coverage",
     "test:deno": "npx -y deno test --allow-read --allow-env deno/tests",

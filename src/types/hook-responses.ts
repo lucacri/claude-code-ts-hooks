@@ -7,18 +7,31 @@ export interface BaseHookResponse {
   continue?: boolean
   stopReason?: string
   suppressOutput?: boolean
+  systemMessage?: string
 }
 
 // PreToolUse specific response
+// @deprecated Use hookSpecificOutput.permissionDecision instead of decision
 export interface PreToolUseResponse extends BaseHookResponse {
+  /** @deprecated Use hookSpecificOutput.permissionDecision instead */
   decision?: 'approve' | 'block'
+  /** @deprecated Use hookSpecificOutput.permissionDecisionReason instead */
   reason?: string
+  hookSpecificOutput?: {
+    hookEventName: 'PreToolUse'
+    permissionDecision?: 'allow' | 'deny' | 'ask'
+    permissionDecisionReason?: string
+  }
 }
 
 // PostToolUse specific response
 export interface PostToolUseResponse extends BaseHookResponse {
   decision?: 'block'
   reason?: string
+  hookSpecificOutput?: {
+    hookEventName: 'PostToolUse'
+    additionalContext?: string
+  }
 }
 
 // Stop/SubagentStop specific response
@@ -29,10 +42,8 @@ export interface StopResponse extends BaseHookResponse {
 
 // UserPromptSubmit specific response
 export interface UserPromptSubmitResponse extends BaseHookResponse {
-  decision?: 'approve' | 'block'
+  decision?: 'block'
   reason?: string
-  contextFiles?: string[]
-  updatedPrompt?: string
   hookSpecificOutput?: {
     hookEventName: 'UserPromptSubmit'
     additionalContext?: string
@@ -41,18 +52,20 @@ export interface UserPromptSubmitResponse extends BaseHookResponse {
 
 // PreCompact specific response
 export interface PreCompactResponse extends BaseHookResponse {
-  decision?: 'approve' | 'block'
-  reason?: string
+  // PreCompact hooks cannot block execution
 }
 
 // SessionStart specific response
 export interface SessionStartResponse extends BaseHookResponse {
-  decision?: 'approve' | 'block'
-  reason?: string
   hookSpecificOutput?: {
     hookEventName: 'SessionStart'
     additionalContext?: string
   }
+}
+
+// SessionEnd specific response
+export interface SessionEndResponse extends BaseHookResponse {
+  // SessionEnd hooks cannot block execution
 }
 
 // Legacy simple response for backward compatibility

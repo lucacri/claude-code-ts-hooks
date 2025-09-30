@@ -11,6 +11,7 @@ import type {
   UserPromptSubmitPayload,
   PreCompactPayload,
   SessionStartPayload,
+  SessionEndPayload,
 } from './hook-payloads.ts'
 
 import type {
@@ -21,6 +22,7 @@ import type {
   UserPromptSubmitResponse,
   PreCompactResponse,
   SessionStartResponse,
+  SessionEndResponse,
 } from './hook-responses.ts'
 
 // Simple handler types
@@ -34,6 +36,7 @@ export type UserPromptSubmitHandler = (
 ) => Promise<UserPromptSubmitResponse> | UserPromptSubmitResponse
 export type PreCompactHandler = (payload: PreCompactPayload) => Promise<PreCompactResponse> | PreCompactResponse
 export type SessionStartHandler = (payload: SessionStartPayload) => Promise<SessionStartResponse> | SessionStartResponse
+export type SessionEndHandler = (payload: SessionEndPayload) => Promise<SessionEndResponse> | SessionEndResponse
 
 // Main handlers interface
 export interface HookHandlers {
@@ -45,4 +48,5 @@ export interface HookHandlers {
   userPromptSubmit?: UserPromptSubmitHandler
   preCompact?: PreCompactHandler
   sessionStart?: SessionStartHandler
+  sessionEnd?: SessionEndHandler
 }

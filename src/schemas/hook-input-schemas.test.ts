@@ -57,6 +57,7 @@ describe('PreToolUseHookInputSchema', () => {
       session_id: 'test-session',
       transcript_path: '/test/path',
       hook_event_name: HookEventName.PreToolUse,
+      cwd: '/test/cwd',
       tool_name: 'test-tool',
       tool_input: { param: 'value' },
     };
@@ -112,6 +113,7 @@ describe('PostToolUseHookInputSchema', () => {
       session_id: 'test-session',
       transcript_path: '/test/path',
       hook_event_name: HookEventName.PostToolUse,
+      cwd: '/test/cwd',
       tool_name: 'test-tool',
       tool_input: { param: 'value' },
       tool_response: { result: 'success' },
@@ -144,6 +146,7 @@ describe('NotificationHookInputSchema', () => {
       session_id: 'test-session',
       transcript_path: '/test/path',
       hook_event_name: HookEventName.Notification,
+      cwd: '/test/cwd',
       message: 'Test notification',
     };
 
@@ -229,6 +232,7 @@ describe('UserPromptSubmitHookInputSchema', () => {
       session_id: 'test-session',
       transcript_path: '/test/path',
       hook_event_name: HookEventName.UserPromptSubmit,
+      cwd: '/test/cwd',
       prompt: 'Test prompt',
     };
 
@@ -300,6 +304,7 @@ describe('HookInputSchema', () => {
         session_id: 'test-session',
         transcript_path: '/test/path',
         hook_event_name: HookEventName.PreToolUse,
+        cwd: '/test/cwd',
         tool_name: 'test-tool',
         tool_input: { param: 'value' },
       },
@@ -307,6 +312,7 @@ describe('HookInputSchema', () => {
         session_id: 'test-session',
         transcript_path: '/test/path',
         hook_event_name: HookEventName.PostToolUse,
+        cwd: '/test/cwd',
         tool_name: 'test-tool',
         tool_input: { param: 'value' },
         tool_response: { result: 'success' },
@@ -315,6 +321,7 @@ describe('HookInputSchema', () => {
         session_id: 'test-session',
         transcript_path: '/test/path',
         hook_event_name: HookEventName.Notification,
+        cwd: '/test/cwd',
         message: 'Test notification',
       },
       {
@@ -333,6 +340,7 @@ describe('HookInputSchema', () => {
         session_id: 'test-session',
         transcript_path: '/test/path',
         hook_event_name: HookEventName.UserPromptSubmit,
+        cwd: '/test/cwd',
         prompt: 'Test prompt',
       },
       {

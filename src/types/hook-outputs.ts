@@ -6,12 +6,22 @@ import type { BaseHookOutput, HookDecision, HookEventName } from './base.ts';
 
 /**
  * Output for PreToolUse hook - can approve or block tool execution
+ * @deprecated Use hookSpecificOutput.permissionDecision instead of decision
  */
 export interface PreToolUseHookOutput extends BaseHookOutput {
-  /** Decision on whether to allow the tool to execute */
+  /** @deprecated Use hookSpecificOutput.permissionDecision instead. Decision on whether to allow the tool to execute */
   decision?: HookDecision;
-  /** Reason for the decision (especially important if blocking) */
+  /** @deprecated Use hookSpecificOutput.permissionDecisionReason instead. Reason for the decision */
   reason?: string;
+  /** Hook-specific output data */
+  hookSpecificOutput?: {
+    /** Name of the hook event */
+    hookEventName: 'PreToolUse';
+    /** Permission decision: 'allow' bypasses permission system, 'deny' blocks execution, 'ask' prompts user */
+    permissionDecision?: 'allow' | 'deny' | 'ask';
+    /** Reason for the permission decision */
+    permissionDecisionReason?: string;
+  };
 }
 
 /**
@@ -22,6 +32,13 @@ export interface PostToolUseHookOutput extends BaseHookOutput {
   decision?: 'block';
   /** Reason for blocking */
   reason?: string;
+  /** Hook-specific output data */
+  hookSpecificOutput?: {
+    /** Name of the hook event */
+    hookEventName: 'PostToolUse';
+    /** Additional context information for Claude to consider */
+    additionalContext?: string;
+  };
 }
 
 /**
@@ -53,34 +70,49 @@ export interface SubagentStopHookOutput extends BaseHookOutput {
 }
 
 /**
- * Output for UserPromptSubmit hook - can approve or block prompt submission
+ * Output for UserPromptSubmit hook - can block prompt submission
  */
 export interface UserPromptSubmitHookOutput extends BaseHookOutput {
-  /** Decision on whether to approve or block the prompt submission */
-  decision?: 'approve' | 'block';
-  /** Reason for the decision */
+  /** Decision on whether to block the prompt submission (only 'block' or undefined) */
+  decision?: 'block';
+  /** Reason for blocking (shown to user but not added to context) */
   reason?: string;
-  /** Additional context files to include */
-  contextFiles?: string[];
-  /** Updated version of the prompt */
-  updatedPrompt?: string;
   /** Hook-specific output data */
   hookSpecificOutput?: {
     /** Name of the hook event */
-    hookEventName: string;
-    /** Additional context information */
-    additionalContext: string;
+    hookEventName: 'UserPromptSubmit';
+    /** Additional context to inject into the conversation */
+    additionalContext?: string;
   };
 }
 
 /**
- * Output for PreCompact hook - can approve or block compaction
+ * Output for PreCompact hook - typically no decision needed
+ * Note: Exit code 2 shows stderr to user only, does not block
  */
 export interface PreCompactHookOutput extends BaseHookOutput {
-  /** Decision on whether to approve or block the compaction */
-  decision?: 'approve' | 'block';
-  /** Reason for the decision */
-  reason?: string;
+  // PreCompact hooks cannot block execution
+}
+
+/**
+ * Output for SessionStart hook - can inject context at session start
+ */
+export interface SessionStartHookOutput extends BaseHookOutput {
+  /** Hook-specific output data */
+  hookSpecificOutput?: {
+    /** Name of the hook event */
+    hookEventName: 'SessionStart';
+    /** Additional context to inject at session start */
+    additionalContext?: string;
+  };
+}
+
+/**
+ * Output for SessionEnd hook - cannot block session termination
+ * Note: SessionEnd hooks run when a session ends but cannot prevent termination
+ */
+export interface SessionEndHookOutput extends BaseHookOutput {
+  // SessionEnd hooks cannot block execution
 }
 
 /**
@@ -94,6 +126,8 @@ export interface HookOutputMap {
   [HookEventName.SubagentStop]: SubagentStopHookOutput;
   [HookEventName.UserPromptSubmit]: UserPromptSubmitHookOutput;
   [HookEventName.PreCompact]: PreCompactHookOutput;
+  [HookEventName.SessionStart]: SessionStartHookOutput;
+  [HookEventName.SessionEnd]: SessionEndHookOutput;
 }
 
 /**

@@ -193,6 +193,15 @@ async function processHook(data: string, hook_type: string, handlers: HookHandle
           }
           break
 
+        case 'SessionEnd':
+          if (handlers.sessionEnd) {
+            const response = await handlers.sessionEnd(payload)
+            console.log(JSON.stringify(response))
+          } else {
+            console.log(JSON.stringify({}))
+          }
+          break
+
     default:
       console.log(JSON.stringify({}))
   }

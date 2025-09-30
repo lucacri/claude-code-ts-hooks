@@ -24,6 +24,8 @@ export interface BaseHookOutput {
   stopReason?: string;
   /** Whether to suppress output from the hook */
   suppressOutput?: boolean;
+  /** Optional warning message shown to the user */
+  systemMessage?: string;
 }
 
 /**
@@ -52,6 +54,8 @@ export enum HookEventName {
   SubagentStop = 'SubagentStop',
   UserPromptSubmit = 'UserPromptSubmit',
   PreCompact = 'PreCompact',
+  SessionStart = 'SessionStart',
+  SessionEnd = 'SessionEnd',
 }
 
 /**

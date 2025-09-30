@@ -231,26 +231,6 @@ describe('SubagentStopHookOutputSchema', () => {
 });
 
 describe('UserPromptSubmitHookOutputSchema', () => {
-  it('should validate valid UserPromptSubmit output with approve decision', () => {
-    const output = {
-      continue: true,
-      decision: 'approve' as const,
-      reason: 'Prompt approved',
-      contextFiles: ['file1.txt', 'file2.txt'],
-      updatedPrompt: 'Updated prompt text',
-      hookSpecificOutput: {
-        hookEventName: 'UserPromptSubmit',
-        additionalContext: 'Additional context',
-      },
-    };
-
-    const result = UserPromptSubmitHookOutputSchema.safeParse(output);
-    expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.data).toEqual(output);
-    }
-  });
-
   it('should validate valid UserPromptSubmit output with block decision', () => {
     const output = {
       continue: false,
@@ -285,34 +265,6 @@ describe('UserPromptSubmitHookOutputSchema', () => {
 });
 
 describe('PreCompactHookOutputSchema', () => {
-  it('should validate valid PreCompact output with approve decision', () => {
-    const output = {
-      continue: true,
-      decision: 'approve' as const,
-      reason: 'Compaction approved',
-    };
-
-    const result = PreCompactHookOutputSchema.safeParse(output);
-    expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.data).toEqual(output);
-    }
-  });
-
-  it('should validate valid PreCompact output with block decision', () => {
-    const output = {
-      continue: false,
-      decision: 'block' as const,
-      reason: 'Compaction blocked',
-    };
-
-    const result = PreCompactHookOutputSchema.safeParse(output);
-    expect(result.success).toBe(true);
-    if (result.success) {
-      expect(result.data).toEqual(output);
-    }
-  });
-
   it('should validate PreCompact output without decision', () => {
     const output = {};
 

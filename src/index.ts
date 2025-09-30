@@ -39,6 +39,7 @@ export type {
   UserPromptSubmitPayload,
   PreCompactPayload,
   SessionStartPayload,
+  SessionEndPayload,
   HookPayload,
 } from './types/hook-payloads.ts';
 
@@ -51,6 +52,7 @@ export type {
   UserPromptSubmitResponse,
   PreCompactResponse,
   SessionStartResponse,
+  SessionEndResponse,
   HookResponse,
 } from './types/hook-responses.ts';
 
@@ -64,6 +66,7 @@ export type {
   UserPromptSubmitHandler,
   PreCompactHandler,
   SessionStartHandler,
+  SessionEndHandler,
   HookHandlers,
 } from './types/hook-handlers.ts';
 

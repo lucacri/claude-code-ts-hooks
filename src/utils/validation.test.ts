@@ -21,6 +21,7 @@ describe('validateHookInput', () => {
       session_id: 'test-session',
       transcript_path: '/test/path',
       hook_event_name: HookEventName.PreToolUse,
+      cwd: '/test/cwd',
       tool_name: 'test-tool',
       tool_input: { param: 'value' },
     };
@@ -38,6 +39,7 @@ describe('validateHookInput', () => {
       session_id: 'test-session',
       transcript_path: '/test/path',
       hook_event_name: HookEventName.PostToolUse,
+      cwd: '/test/cwd',
       tool_name: 'test-tool',
       tool_input: { param: 'value' },
       tool_response: { result: 'success' },
@@ -72,6 +74,7 @@ describe('validateHookInput', () => {
       session_id: 'test-session',
       transcript_path: '/test/path',
       hook_event_name: HookEventName.UserPromptSubmit,
+      cwd: '/test/cwd',
       prompt: 'Test prompt',
     };
 
@@ -219,6 +222,7 @@ describe('parseHookInput', () => {
       session_id: 'test-session',
       transcript_path: '/test/path',
       hook_event_name: HookEventName.PreToolUse,
+      cwd: '/test/cwd',
       tool_name: 'test-tool',
       tool_input: { param: 'value' },
     };
@@ -236,6 +240,7 @@ describe('parseHookInput', () => {
       session_id: 'test-session',
       transcript_path: '/test/path',
       hook_event_name: HookEventName.PostToolUse,
+      cwd: '/test/cwd',
       tool_name: 'test-tool',
       tool_input: { param: 'value' },
       tool_response: { result: 'success' }, // Add required field

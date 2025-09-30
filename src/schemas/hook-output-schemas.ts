@@ -13,6 +13,8 @@ import type {
   SubagentStopHookOutput,
   UserPromptSubmitHookOutput,
   PreCompactHookOutput,
+  SessionStartHookOutput,
+  SessionEndHookOutput,
   HookOutput,
 } from '../types/index.ts';
 
@@ -28,12 +30,14 @@ type BaseHookOutputShape = {
   continue: z.ZodOptional<z.ZodBoolean>;
   stopReason: z.ZodOptional<z.ZodString>;
   suppressOutput: z.ZodOptional<z.ZodBoolean>;
+  systemMessage: z.ZodOptional<z.ZodString>;
 };
 
 const baseHookOutputShape: BaseHookOutputShape = {
   continue: z.boolean().optional(),
   stopReason: z.string().optional(),
   suppressOutput: z.boolean().optional(),
+  systemMessage: z.string().optional(),
 };
 
 export const BaseHookOutputSchema: HookOutputObjectSchema<
@@ -44,15 +48,23 @@ export const BaseHookOutputSchema: HookOutputObjectSchema<
 export const HookDecisionSchema: z.ZodEnum<['approve', 'block']> =
   z.enum(['approve', 'block']) satisfies z.ZodType<HookDecision>;
 
+const preToolUseHookSpecificOutputSchema = z.object({
+  hookEventName: z.literal('PreToolUse'),
+  permissionDecision: z.enum(['allow', 'deny', 'ask']).optional(),
+  permissionDecisionReason: z.string().optional(),
+});
+
 type PreToolUseHookOutputShape = BaseHookOutputShape & {
   decision: z.ZodOptional<typeof HookDecisionSchema>;
   reason: z.ZodOptional<z.ZodString>;
+  hookSpecificOutput: z.ZodOptional<typeof preToolUseHookSpecificOutputSchema>;
 };
 
 const preToolUseHookOutputShape: PreToolUseHookOutputShape = {
   ...baseHookOutputShape,
   decision: HookDecisionSchema.optional(),
   reason: z.string().optional(),
+  hookSpecificOutput: preToolUseHookSpecificOutputSchema.optional(),
 };
 
 export const PreToolUseHookOutputSchema: HookOutputObjectSchema<
@@ -62,15 +74,22 @@ export const PreToolUseHookOutputSchema: HookOutputObjectSchema<
 
 type BlockDecisionShape = z.ZodLiteral<'block'>;
 
+const postToolUseHookSpecificOutputSchema = z.object({
+  hookEventName: z.literal('PostToolUse'),
+  additionalContext: z.string().optional(),
+});
+
 type PostToolUseHookOutputShape = BaseHookOutputShape & {
   decision: z.ZodOptional<BlockDecisionShape>;
   reason: z.ZodOptional<z.ZodString>;
+  hookSpecificOutput: z.ZodOptional<typeof postToolUseHookSpecificOutputSchema>;
 };
 
 const postToolUseHookOutputShape: PostToolUseHookOutputShape = {
   ...baseHookOutputShape,
   decision: z.literal('block').optional(),
   reason: z.string().optional(),
+  hookSpecificOutput: postToolUseHookSpecificOutputSchema.optional(),
 };
 
 export const PostToolUseHookOutputSchema: HookOutputObjectSchema<
@@ -127,39 +146,22 @@ export const SubagentStopHookOutputSchema: HookOutputObjectSchema<
 > =
   z.object(subagentStopHookOutputShape) satisfies z.ZodType<SubagentStopHookOutput>;
 
-type HookSpecificOutputShape = {
-  hookEventName: z.ZodString;
-  additionalContext: z.ZodString;
-};
-
-const hookSpecificOutputShape: HookSpecificOutputShape = {
-  hookEventName: z.string(),
-  additionalContext: z.string(),
-};
-
-const hookSpecificOutputSchema: HookOutputObjectSchema<
-  HookSpecificOutputShape,
-  {
-    hookEventName: string;
-    additionalContext: string;
-  }
-> = z.object(hookSpecificOutputShape);
+const userPromptSubmitHookSpecificOutputSchema = z.object({
+  hookEventName: z.literal('UserPromptSubmit'),
+  additionalContext: z.string().optional(),
+});
 
 type UserPromptSubmitHookOutputShape = BaseHookOutputShape & {
-  decision: z.ZodOptional<z.ZodEnum<['approve', 'block']>>;
+  decision: z.ZodOptional<BlockDecisionShape>;
   reason: z.ZodOptional<z.ZodString>;
-  contextFiles: z.ZodOptional<z.ZodArray<z.ZodString>>;
-  updatedPrompt: z.ZodOptional<z.ZodString>;
-  hookSpecificOutput: z.ZodOptional<typeof hookSpecificOutputSchema>;
+  hookSpecificOutput: z.ZodOptional<typeof userPromptSubmitHookSpecificOutputSchema>;
 };
 
 const userPromptSubmitHookOutputShape: UserPromptSubmitHookOutputShape = {
   ...baseHookOutputShape,
-  decision: z.enum(['approve', 'block']).optional(),
+  decision: z.literal('block').optional(),
   reason: z.string().optional(),
-  contextFiles: z.array(z.string()).optional(),
-  updatedPrompt: z.string().optional(),
-  hookSpecificOutput: hookSpecificOutputSchema.optional(),
+  hookSpecificOutput: userPromptSubmitHookSpecificOutputSchema.optional(),
 };
 
 export const UserPromptSubmitHookOutputSchema: HookOutputObjectSchema<
@@ -168,15 +170,10 @@ export const UserPromptSubmitHookOutputSchema: HookOutputObjectSchema<
 > =
   z.object(userPromptSubmitHookOutputShape) satisfies z.ZodType<UserPromptSubmitHookOutput>;
 
-type PreCompactHookOutputShape = BaseHookOutputShape & {
-  decision: z.ZodOptional<z.ZodEnum<['approve', 'block']>>;
-  reason: z.ZodOptional<z.ZodString>;
-};
+type PreCompactHookOutputShape = BaseHookOutputShape;
 
 const preCompactHookOutputShape: PreCompactHookOutputShape = {
   ...baseHookOutputShape,
-  decision: z.enum(['approve', 'block']).optional(),
-  reason: z.string().optional(),
 };
 
 export const PreCompactHookOutputSchema: HookOutputObjectSchema<
@@ -184,6 +181,38 @@ export const PreCompactHookOutputSchema: HookOutputObjectSchema<
   PreCompactHookOutput
 > =
   z.object(preCompactHookOutputShape) satisfies z.ZodType<PreCompactHookOutput>;
+
+const sessionStartHookSpecificOutputSchema = z.object({
+  hookEventName: z.literal('SessionStart'),
+  additionalContext: z.string().optional(),
+});
+
+type SessionStartHookOutputShape = BaseHookOutputShape & {
+  hookSpecificOutput: z.ZodOptional<typeof sessionStartHookSpecificOutputSchema>;
+};
+
+const sessionStartHookOutputShape: SessionStartHookOutputShape = {
+  ...baseHookOutputShape,
+  hookSpecificOutput: sessionStartHookSpecificOutputSchema.optional(),
+};
+
+export const SessionStartHookOutputSchema: HookOutputObjectSchema<
+  SessionStartHookOutputShape,
+  SessionStartHookOutput
+> =
+  z.object(sessionStartHookOutputShape) satisfies z.ZodType<SessionStartHookOutput>;
+
+type SessionEndHookOutputShape = BaseHookOutputShape;
+
+const sessionEndHookOutputShape: SessionEndHookOutputShape = {
+  ...baseHookOutputShape,
+};
+
+export const SessionEndHookOutputSchema: HookOutputObjectSchema<
+  SessionEndHookOutputShape,
+  SessionEndHookOutput
+> =
+  z.object(sessionEndHookOutputShape) satisfies z.ZodType<SessionEndHookOutput>;
 
 export const HookOutputSchema: z.ZodUnion<
   [
@@ -194,6 +223,8 @@ export const HookOutputSchema: z.ZodUnion<
     HookOutputObjectSchema<SubagentStopHookOutputShape, SubagentStopHookOutput>,
     HookOutputObjectSchema<UserPromptSubmitHookOutputShape, UserPromptSubmitHookOutput>,
     HookOutputObjectSchema<PreCompactHookOutputShape, PreCompactHookOutput>,
+    HookOutputObjectSchema<SessionStartHookOutputShape, SessionStartHookOutput>,
+    HookOutputObjectSchema<SessionEndHookOutputShape, SessionEndHookOutput>,
   ]
 > =
   z.union([
@@ -204,4 +235,6 @@ export const HookOutputSchema: z.ZodUnion<
     SubagentStopHookOutputSchema,
     UserPromptSubmitHookOutputSchema,
     PreCompactHookOutputSchema,
+    SessionStartHookOutputSchema,
+    SessionEndHookOutputSchema,
   ]) satisfies z.ZodType<HookOutput>;

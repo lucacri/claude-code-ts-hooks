@@ -9,6 +9,8 @@ import type { BaseHookInput, ToolInput, ToolResponse, HookEventName } from './ba
  */
 export interface PreToolUseHookInput extends BaseHookInput {
   hook_event_name: HookEventName.PreToolUse;
+  /** The current working directory when the hook is invoked */
+  cwd: string;
   /** Name of the tool about to be used */
   tool_name: string;
   /** Input parameters that will be passed to the tool */
@@ -20,6 +22,8 @@ export interface PreToolUseHookInput extends BaseHookInput {
  */
 export interface PostToolUseHookInput extends BaseHookInput {
   hook_event_name: HookEventName.PostToolUse;
+  /** The current working directory when the hook is invoked */
+  cwd: string;
   /** Name of the tool that was used */
   tool_name: string;
   /** Input parameters that were passed to the tool */
@@ -33,6 +37,8 @@ export interface PostToolUseHookInput extends BaseHookInput {
  */
 export interface NotificationHookInput extends BaseHookInput {
   hook_event_name: HookEventName.Notification;
+  /** The current working directory when the hook is invoked */
+  cwd: string;
   /** The notification message */
   message: string;
 }
@@ -60,6 +66,8 @@ export interface SubagentStopHookInput extends BaseHookInput {
  */
 export interface UserPromptSubmitHookInput extends BaseHookInput {
   hook_event_name: HookEventName.UserPromptSubmit;
+  /** The current working directory when the hook is invoked */
+  cwd: string;
   /** The user's prompt text */
   prompt: string;
 }
@@ -76,6 +84,26 @@ export interface PreCompactHookInput extends BaseHookInput {
 }
 
 /**
+ * Input for SessionStart hook - triggered when a session starts or resumes
+ */
+export interface SessionStartHookInput extends BaseHookInput {
+  hook_event_name: HookEventName.SessionStart;
+  /** What triggered the session start: 'startup' | 'resume' | 'clear' | 'compact' */
+  source: 'startup' | 'resume' | 'clear' | 'compact';
+}
+
+/**
+ * Input for SessionEnd hook - triggered when a session ends
+ */
+export interface SessionEndHookInput extends BaseHookInput {
+  hook_event_name: HookEventName.SessionEnd;
+  /** The current working directory when the hook is invoked */
+  cwd: string;
+  /** Why the session ended: 'clear' | 'logout' | 'prompt_input_exit' | 'other' */
+  reason: 'clear' | 'logout' | 'prompt_input_exit' | 'other';
+}
+
+/**
  * Map of hook event names to their corresponding input types
  */
 export interface HookInputMap {
@@ -86,6 +114,8 @@ export interface HookInputMap {
   [HookEventName.SubagentStop]: SubagentStopHookInput;
   [HookEventName.UserPromptSubmit]: UserPromptSubmitHookInput;
   [HookEventName.PreCompact]: PreCompactHookInput;
+  [HookEventName.SessionStart]: SessionStartHookInput;
+  [HookEventName.SessionEnd]: SessionEndHookInput;
 }
 
 /**

@@ -11,12 +11,14 @@ export interface BaseHookPayload {
 
 export interface PreToolUsePayload extends BaseHookPayload {
   hook_type: 'PreToolUse'
+  cwd: string
   tool_name: string
   tool_input: Record<string, unknown>
 }
 
 export interface PostToolUsePayload extends BaseHookPayload {
   hook_type: 'PostToolUse'
+  cwd: string
   tool_name: string
   tool_input: Record<string, unknown>
   tool_response: Record<string, unknown>
@@ -24,6 +26,7 @@ export interface PostToolUsePayload extends BaseHookPayload {
 
 export interface NotificationPayload extends BaseHookPayload {
   hook_type: 'Notification'
+  cwd: string
   message: string
 }
 
@@ -39,6 +42,7 @@ export interface SubagentStopPayload extends BaseHookPayload {
 
 export interface UserPromptSubmitPayload extends BaseHookPayload {
   hook_type: 'UserPromptSubmit'
+  cwd: string
   prompt: string
 }
 
@@ -50,6 +54,13 @@ export interface PreCompactPayload extends BaseHookPayload {
 
 export interface SessionStartPayload extends BaseHookPayload {
   hook_type: 'SessionStart'
+  source: 'startup' | 'resume' | 'clear' | 'compact'
+}
+
+export interface SessionEndPayload extends BaseHookPayload {
+  hook_type: 'SessionEnd'
+  cwd: string
+  reason: 'clear' | 'logout' | 'prompt_input_exit' | 'other'
 }
 
 export type HookPayload =
@@ -61,3 +72,4 @@ export type HookPayload =
   | UserPromptSubmitPayload
   | PreCompactPayload
   | SessionStartPayload
+  | SessionEndPayload
