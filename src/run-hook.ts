@@ -24,10 +24,10 @@ export function log(...args: unknown[]): void {
 }
 
 // Main hook runner - preserved existing Node.js behavior for compatibility
-export function runHook(handlers: HookHandlers): void {
+export function runHook(handlers: HookHandlers): void | Promise<void> {
   // Try to get hook_type from command line arguments
   let hook_type: string
-  
+
   // Use process.argv directly if available (Node.js), fallback to cross-platform
   if (typeof process !== 'undefined' && process.argv) {
     hook_type = process.argv[2] || ''
@@ -40,7 +40,7 @@ export function runHook(handlers: HookHandlers): void {
 
   // For Deno and Bun, we need to handle stdin differently
   if (runtime === 'deno' || runtime === 'bun') {
-    handleStdinAsync(hook_type, handlers)
+    return handleStdinAsync(hook_type, handlers)
   } else {
     // Node.js traditional event-based approach - maintain compatibility
     if (typeof process !== 'undefined' && process.stdin) {
@@ -50,7 +50,7 @@ export function runHook(handlers: HookHandlers): void {
         const text = data instanceof Uint8Array ? new TextDecoder().decode(data) : String(data)
         await processHook(text, hook_type, handlers)
       };
-      
+
       // Add the data listener
       process.stdin.on('data', onData);
     }

@@ -538,19 +538,109 @@ describe('runHook', () => {
     vi.spyOn(runtime, 'getArgs').mockReturnValue(['PreToolUse']);
     // Mock readStdin to immediately reject to avoid hanging
     vi.spyOn(runtime, 'readStdin').mockRejectedValue(new Error('Test error'));
-    
+
     const handlers: HookHandlers = {};
 
     runHook(handlers);
-    
+
     // Verify runtime detection was called (covers line 28)
     expect(runtime.detectRuntime).toHaveBeenCalled();
-    
+
     // Wait briefly for async operation
     await new Promise(resolve => setTimeout(resolve, 10));
-    
+
     // Verify error handling path was exercised (covers lines 50-53)
     expect(mockConsole.error).toHaveBeenCalledWith('Hook error:', expect.any(Error));
     expect(mockConsole.log).toHaveBeenCalledWith(JSON.stringify({ action: 'continue' }));
+  });
+
+  // TDD: Test for stdin reading bug fix
+  it('should properly await stdin reading for Deno and call handler', async () => {
+    // Remove the process global to ensure we're using the mocked runtime
+    const originalProcess = globalThis.process;
+    delete (globalThis as  {process?: unknown}).process;
+
+    vi.spyOn(runtime, 'detectRuntime').mockReturnValue('deno');
+    vi.spyOn(runtime, 'getArgs').mockReturnValue(['PreToolUse']);
+
+    const inputData = {
+      session_id: 'test-session',
+      transcript_path: '/test/path',
+      tool_name: 'test-tool',
+      tool_input: { param: 'value' },
+    };
+
+    // Mock readStdin to return actual data
+    const readStdinSpy = vi.spyOn(runtime, 'readStdin').mockResolvedValue(JSON.stringify(inputData));
+
+    const mockHandler = vi.fn().mockResolvedValue({ decision: 'approve' });
+    const handlers: HookHandlers = {
+      preToolUse: mockHandler,
+    };
+
+    // Should return a promise for Deno/Bun that we can await
+    const result = runHook(handlers);
+    expect(result).toBeInstanceOf(Promise);
+    await result;
+
+    // Restore process
+    globalThis.process = originalProcess;
+
+    // Verify readStdin was called
+    expect(readStdinSpy).toHaveBeenCalled();
+
+    // Verify handler was called with correct data
+    expect(mockHandler).toHaveBeenCalledWith({
+      ...inputData,
+      hook_type: 'PreToolUse',
+    });
+    expect(mockConsole.log).toHaveBeenCalledWith(
+      JSON.stringify({ decision: 'approve' })
+    );
+  });
+
+  it('should properly await stdin reading for Bun and call handler', async () => {
+    // Remove the process global to ensure we're using the mocked runtime
+    const originalProcess = globalThis.process;
+    delete (globalThis as {process?: unknown}).process;
+
+    vi.spyOn(runtime, 'detectRuntime').mockReturnValue('bun');
+    vi.spyOn(runtime, 'getArgs').mockReturnValue(['PostToolUse']);
+
+    const inputData = {
+      session_id: 'test-session',
+      transcript_path: '/test/path',
+      tool_name: 'test-tool',
+      tool_input: { param: 'value' },
+      tool_response: { result: 'success' },
+    };
+
+    // Mock readStdin to return actual data
+    const readStdinSpy = vi.spyOn(runtime, 'readStdin').mockResolvedValue(JSON.stringify(inputData));
+
+    const mockHandler = vi.fn().mockResolvedValue({ decision: 'block' });
+    const handlers: HookHandlers = {
+      postToolUse: mockHandler,
+    };
+
+    // Should return a promise for Deno/Bun that we can await
+    const result = runHook(handlers);
+    expect(result).toBeInstanceOf(Promise);
+    await result;
+
+    // Restore process
+    globalThis.process = originalProcess;
+
+    // Verify readStdin was called
+    expect(readStdinSpy).toHaveBeenCalled();
+
+    // Verify handler was called with correct data
+    expect(mockHandler).toHaveBeenCalledWith({
+      ...inputData,
+      hook_type: 'PostToolUse',
+    });
+    expect(mockConsole.log).toHaveBeenCalledWith(
+      JSON.stringify({ decision: 'block' })
+    );
   });
 });

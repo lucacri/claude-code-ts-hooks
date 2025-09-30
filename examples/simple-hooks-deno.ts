@@ -50,5 +50,5 @@ const handlers: HookHandlers = {
   }
 };
 
-// Run the hooks
-runHook(handlers);
+// Run the hooks (await required for Deno)
+await runHook(handlers);
