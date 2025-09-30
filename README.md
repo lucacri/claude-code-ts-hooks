@@ -474,6 +474,7 @@ import { runHook } from "./src/index.ts";
 This project uses pre-commit hooks to ensure code quality. The hooks are automatically installed when you run `npm install`.
 
 The pre-commit hook runs:
+- Branch sync check (ensures local branch is up-to-date with `origin/main`)
 - TypeScript type checking (`npm run typecheck`)
 - ESLint linting (`npm run lint`)
 - Vitest tests (`npm test`)

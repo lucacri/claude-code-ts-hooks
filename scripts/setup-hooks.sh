@@ -17,6 +17,27 @@ cat > "$HOOKS_DIR/pre-commit" << 'EOF'
 
 echo "🔍 Running pre-commit checks..."
 
+# Check if branch is up-to-date with origin/main
+echo "\n🔄 Checking if branch is up-to-date with origin/main..."
+git fetch origin main --quiet 2>/dev/null || true
+
+# Only check if origin/main exists
+if git rev-parse --verify origin/main >/dev/null 2>&1; then
+  LOCAL=$(git rev-parse @)
+  REMOTE=$(git rev-parse origin/main)
+  BASE=$(git merge-base @ origin/main 2>/dev/null || echo "$LOCAL")
+
+  if [ "$LOCAL" != "$REMOTE" ] && [ "$LOCAL" = "$BASE" ]; then
+    echo "❌ Your branch is behind origin/main. Please rebase first:"
+    echo "   git fetch origin"
+    echo "   git rebase origin/main"
+    echo ""
+    echo "Commit aborted."
+    exit 1
+  fi
+  echo "✅ Branch is up-to-date with origin/main"
+fi
+
 # Run TypeScript type checking
 echo "\n📝 Running TypeScript type check..."
 npm run typecheck
@@ -67,6 +88,7 @@ chmod +x "$HOOKS_DIR/pre-commit"
 echo "✅ Pre-commit hook installed successfully!"
 echo ""
 echo "The following checks will run before each commit:"
+echo "  • Branch sync check (must be up-to-date with origin/main)"
 echo "  • TypeScript type checking"
 echo "  • ESLint linting"
 echo "  • Vitest tests"
