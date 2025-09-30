@@ -1,3 +1,25 @@
+## [2.0.0](https://github.com/lucacri/claude-code-ts-hooks/compare/v1.6.0...v2.0.0) (2025-09-30)
+
+### ⚠ BREAKING CHANGES
+
+* The release process now automatically synchronizes deno.json version with package.json. This ensures version consistency between npm and JSR (Deno) package registries.
+
+- Add sync-deno-version.js script to copy version from package.json to deno.json
+- Update release.config.js to run sync script before git commit
+- Add deno.json to semantic-release git assets for automatic versioning
+- Align deno.json version to current package.json version (1.6.0)
+
+This eliminates version drift between npm and JSR registries.
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+
+### Features
+
+* **hooks:** add branch sync check to pre-commit ([5a865b9](https://github.com/lucacri/claude-code-ts-hooks/commit/5a865b9e9fc9d16b5d99fbac70dc1b1638982597))
+* synchronize deno.json version with semantic-release workflow ([82b34cb](https://github.com/lucacri/claude-code-ts-hooks/commit/82b34cb4dd83877758cf763d499d6b5d9b37f89b))
+
 ## [1.6.0](https://github.com/lucacri/claude-code-ts-hooks/compare/v1.5.0...v1.6.0) (2025-09-30)
 
 ### Features
