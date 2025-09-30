@@ -2,7 +2,7 @@
   "name": "@lucacri/claude-code-ts-hooks",
   "jsr": true,
   "type": "module",
-  "version": "1.1.2",
+  "version": "1.6.0",
   "exports": {
     ".": "./src/index.ts",
     "./helpers": "./src/hooks/helpers.ts"
@@ -17,12 +17,24 @@
     "example": "deno run --allow-read --allow-env examples/simple-hooks-deno.ts"
   },
   "lint": {
-    "include": ["src/", "examples/"],
-    "exclude": ["dist/", "node_modules/"]
+    "include": [
+      "src/",
+      "examples/"
+    ],
+    "exclude": [
+      "dist/",
+      "node_modules/"
+    ]
   },
   "fmt": {
-    "include": ["src/", "examples/"],
-    "exclude": ["dist/", "node_modules/"],
+    "include": [
+      "src/",
+      "examples/"
+    ],
+    "exclude": [
+      "dist/",
+      "node_modules/"
+    ],
     "options": {
       "useTabs": false,
       "lineWidth": 100,
@@ -36,8 +48,13 @@
     "strict": true,
     "exactOptionalPropertyTypes": false,
     "noUncheckedIndexedAccess": true,
-    "lib": ["ES2020", "DOM"],
-    "types": ["npm:@types/node/globals"]
+    "lib": [
+      "ES2020",
+      "DOM"
+    ],
+    "types": [
+      "npm:@types/node/globals"
+    ]
   },
   "publish": {
     "include": [

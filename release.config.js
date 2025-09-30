@@ -15,8 +15,12 @@ module.exports = {
     // Dynamically publish to npm only when NPM_TOKEN is present
     ['@semantic-release/npm', { npmPublish: !!process.env.NPM_TOKEN }],
     ['@semantic-release/github', { assets: [] }],
+    // Sync deno.json version before committing
+    ['@semantic-release/exec', {
+      prepareCmd: 'node scripts/sync-deno-version.js'
+    }],
     ['@semantic-release/git', {
-      assets: ['CHANGELOG.md', 'package.json', 'package-lock.json', 'npm-shrinkwrap.json'],
+      assets: ['CHANGELOG.md', 'package.json', 'package-lock.json', 'npm-shrinkwrap.json', 'deno.json'],
       message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}'
     }],
     // Publish to JSR after successful release
