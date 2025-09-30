@@ -1,3 +1,9 @@
+## [2.0.1](https://github.com/lucacri/claude-code-ts-hooks/compare/v2.0.0...v2.0.1) (2025-09-30)
+
+### Bug Fixes
+
+* enforce zero ESLint warnings and add justifications for necessary any types ([7007103](https://github.com/lucacri/claude-code-ts-hooks/commit/7007103d45a4e151d8c5f40cdbb759acd22868de))
+
 ## [2.0.0](https://github.com/lucacri/claude-code-ts-hooks/compare/v1.6.0...v2.0.0) (2025-09-30)
 
 ### ⚠ BREAKING CHANGES
