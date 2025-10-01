@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { detectRuntime, getArgs, getEnv, readStdin, exit } from './runtime.ts';
+import { detectRuntime, getArgs, getEnv, readStdin, exit, getRuntimeInfo } from './runtime.ts';
 import { Buffer } from "node:buffer";
 
 describe('runtime utilities', () => {
@@ -371,10 +371,112 @@ describe('runtime utilities', () => {
       vi.stubGlobal('Deno', undefined);
       vi.stubGlobal('Bun', undefined);
       vi.stubGlobal('process', undefined);
-      
+
       // Should not throw
       expect(() => exit(0)).not.toThrow();
-      
+
+      vi.unstubAllGlobals();
+    });
+  });
+
+  describe('getRuntimeInfo', () => {
+    it('should return runtime info for Deno', () => {
+      const mockDeno = {
+        version: { deno: '1.40.0' },
+        build: { os: 'linux', arch: 'x86_64' },
+        stdin: { readable: true },
+        env: { get: vi.fn() }
+      };
+      vi.stubGlobal('Deno', mockDeno);
+      vi.stubGlobal('Bun', undefined);
+      vi.stubGlobal('process', undefined);
+
+      const info = getRuntimeInfo();
+
+      expect(info.runtime).toBe('deno');
+      expect(info.version).toBe('1.40.0');
+      expect(info.platform).toBe('linux');
+      expect(info.arch).toBe('x86_64');
+      expect(info.supportsStdin).toBe(true);
+      expect(info.supportsEnvVars).toBe(true);
+
+      vi.unstubAllGlobals();
+    });
+
+    it('should return runtime info for Bun', () => {
+      const mockBun = { version: '1.0.0' };
+      const mockProcess = {
+        platform: 'darwin',
+        arch: 'arm64',
+        stdin: {},
+        env: {}
+      };
+      vi.stubGlobal('Deno', undefined);
+      vi.stubGlobal('Bun', mockBun);
+      vi.stubGlobal('process', mockProcess);
+
+      const info = getRuntimeInfo();
+
+      expect(info.runtime).toBe('bun');
+      expect(info.version).toBe('1.0.0');
+      expect(info.platform).toBe('darwin');
+      expect(info.arch).toBe('arm64');
+      expect(info.supportsStdin).toBe(true);
+      expect(info.supportsEnvVars).toBe(true);
+
+      vi.unstubAllGlobals();
+    });
+
+    it('should return runtime info for Node.js', () => {
+      const mockProcess = {
+        version: 'v18.0.0',
+        versions: { node: '18.0.0' },
+        platform: 'win32',
+        arch: 'x64',
+        stdin: {},
+        env: {}
+      };
+      vi.stubGlobal('Deno', undefined);
+      vi.stubGlobal('Bun', undefined);
+      vi.stubGlobal('process', mockProcess);
+
+      const info = getRuntimeInfo();
+
+      expect(info.runtime).toBe('node');
+      expect(info.version).toBe('v18.0.0');
+      expect(info.nodeVersion).toBe('18.0.0');
+      expect(info.platform).toBe('win32');
+      expect(info.arch).toBe('x64');
+      expect(info.supportsStdin).toBe(true);
+      expect(info.supportsEnvVars).toBe(true);
+
+      vi.unstubAllGlobals();
+    });
+
+    it('should handle unknown runtime', () => {
+      vi.stubGlobal('Deno', undefined);
+      vi.stubGlobal('Bun', undefined);
+      vi.stubGlobal('process', undefined);
+
+      const info = getRuntimeInfo();
+
+      expect(info.runtime).toBe('unknown');
+      expect(info.supportsStdin).toBe(false);
+      expect(info.supportsEnvVars).toBe(false);
+
+      vi.unstubAllGlobals();
+    });
+
+    it('should detect Buffer availability', () => {
+      vi.stubGlobal('Deno', undefined);
+      vi.stubGlobal('Bun', undefined);
+      vi.stubGlobal('Buffer', class Buffer {});
+      vi.stubGlobal('process', { versions: { node: '18.0.0' } });
+
+      const info = getRuntimeInfo();
+
+      expect(info.hasBuffer).toBe(true);
+
       vi.unstubAllGlobals();
     });
   });

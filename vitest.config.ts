@@ -10,12 +10,17 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
+      include: ['src/**/*.ts'],
       exclude: [
         'node_modules/',
         'dist/',
         '**/*.d.ts',
         '**/*.config.{js,ts}',
+        '**/*.test.ts',
+        '**/*.spec.ts',
         'examples/',
+        'scripts/',
+        'deno/',
         '.eslintrc.js',
         'src/types/hook-inputs.ts', // Only contains interfaces/types
         'src/types/index.ts', // Only re-exports
