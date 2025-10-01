@@ -1,3 +1,15 @@
+## [2.1.0](https://github.com/lucacri/claude-code-ts-hooks/compare/v2.0.1...v2.1.0) (2025-10-01)
+
+### Features
+
+* migrate from npm:zod to jsr:@zod/zod for Deno ([66bfe30](https://github.com/lucacri/claude-code-ts-hooks/commit/66bfe30b5866e0d696c32f8127227abca44687df))
+
+### Bug Fixes
+
+* add explicit type annotations for JSR slow type compliance ([b66757e](https://github.com/lucacri/claude-code-ts-hooks/commit/b66757e54446f9dd7fab6153a3f4dac8901fa3b3))
+* improve coverage to 100% functions and configure coverage scope ([2e81557](https://github.com/lucacri/claude-code-ts-hooks/commit/2e815577aebdbae74e6a9c3189b0987fd53082da))
+* resolve stdin reading race condition for Deno and Bun runtimes ([7644279](https://github.com/lucacri/claude-code-ts-hooks/commit/76442795c3a9c6cb2300d7cdb0342dffbc5bde96))
+
 ## [2.0.1](https://github.com/lucacri/claude-code-ts-hooks/compare/v2.0.0...v2.0.1) (2025-09-30)
 
 ### Bug Fixes
