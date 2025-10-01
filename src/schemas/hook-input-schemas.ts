@@ -155,26 +155,33 @@ const preCompactHookInputShape: PreCompactHookInputShape = {
 
 export const PreCompactHookInputSchema: HookObjectSchema<PreCompactHookInputShape> = z.object(preCompactHookInputShape) satisfies z.ZodType<PreCompactHookInput>;
 
+type SessionStartHookInputShape = Omit<BaseHookInputShape, 'hook_event_name'> & {
+  hook_event_name: z.ZodLiteral<HookEventName.SessionStart>;
+  source: z.ZodEnum<['startup', 'resume', 'clear', 'compact']>;
+};
+
 /** @internal */
-const sessionStartHookInputShape = {
+const sessionStartHookInputShape: SessionStartHookInputShape = {
   ...baseHookInputShape,
   hook_event_name: z.literal(HookEventName.SessionStart),
   source: z.enum(['startup', 'resume', 'clear', 'compact']),
 };
 
-type SessionStartHookInputShape = typeof sessionStartHookInputShape;
-
 export const SessionStartHookInputSchema: HookObjectSchema<SessionStartHookInputShape> = z.object(sessionStartHookInputShape) satisfies z.ZodType<SessionStartHookInput>;
 
+type SessionEndHookInputShape = Omit<BaseHookInputShape, 'hook_event_name'> & {
+  hook_event_name: z.ZodLiteral<HookEventName.SessionEnd>;
+  cwd: z.ZodString;
+  reason: z.ZodEnum<['clear', 'logout', 'prompt_input_exit', 'other']>;
+};
+
 /** @internal */
-const sessionEndHookInputShape = {
+const sessionEndHookInputShape: SessionEndHookInputShape = {
   ...baseHookInputShape,
   hook_event_name: z.literal(HookEventName.SessionEnd),
   cwd: z.string(),
   reason: z.enum(['clear', 'logout', 'prompt_input_exit', 'other']),
 };
-
-type SessionEndHookInputShape = typeof sessionEndHookInputShape;
 
 export const SessionEndHookInputSchema: HookObjectSchema<SessionEndHookInputShape> = z.object(sessionEndHookInputShape) satisfies z.ZodType<SessionEndHookInput>;
 

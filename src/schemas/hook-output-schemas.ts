@@ -40,7 +40,11 @@ export const HookDecisionSchema: z.ZodType<HookDecision> =
   z.enum(['approve', 'block']) satisfies z.ZodType<HookDecision>;
 
 /** @internal */
-const preToolUseHookSpecificOutputSchema = z.object({
+const preToolUseHookSpecificOutputSchema: z.ZodObject<{
+  hookEventName: z.ZodLiteral<'PreToolUse'>;
+  permissionDecision: z.ZodOptional<z.ZodEnum<['allow', 'deny', 'ask']>>;
+  permissionDecisionReason: z.ZodOptional<z.ZodString>;
+}> = z.object({
   hookEventName: z.literal('PreToolUse'),
   permissionDecision: z.enum(['allow', 'deny', 'ask']).optional(),
   permissionDecisionReason: z.string().optional(),
