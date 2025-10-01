@@ -20,13 +20,7 @@ import type {
   HookInput,
 } from '../types/index.ts';
 
-type HookObjectSchema<Shape extends z.ZodRawShape, Output> = z.ZodObject<
-  Shape,
-  'strip',
-  z.ZodTypeAny,
-  Output,
-  Output
->;
+type HookObjectSchema<Shape extends z.ZodRawShape> = z.ZodObject<Shape>;
 
 type BaseHookInputShape = {
   session_id: z.ZodString;
@@ -40,10 +34,8 @@ const baseHookInputShape: BaseHookInputShape = {
   hook_event_name: z.string(),
 };
 
-export const BaseHookInputSchema: HookObjectSchema<
-  BaseHookInputShape,
-  BaseHookInput
-> = z.object(baseHookInputShape) satisfies z.ZodType<BaseHookInput>;
+export const BaseHookInputSchema: HookObjectSchema<BaseHookInputShape> =
+  z.object(baseHookInputShape) satisfies z.ZodType<BaseHookInput>;
 
 export const ToolInputSchema: z.ZodRecord<z.ZodString, z.ZodUnknown> =
   z.record(z.string(), z.unknown()) satisfies z.ZodType<ToolInput>;
@@ -66,10 +58,8 @@ const preToolUseHookInputShape: PreToolUseHookInputShape = {
   tool_input: ToolInputSchema,
 };
 
-export const PreToolUseHookInputSchema: HookObjectSchema<
-  PreToolUseHookInputShape,
-  PreToolUseHookInput
-> = z.object(preToolUseHookInputShape) satisfies z.ZodType<PreToolUseHookInput>;
+export const PreToolUseHookInputSchema: HookObjectSchema<PreToolUseHookInputShape> =
+  z.object(preToolUseHookInputShape) satisfies z.ZodType<PreToolUseHookInput>;
 
 type PostToolUseHookInputShape = Omit<BaseHookInputShape, 'hook_event_name'> & {
   hook_event_name: z.ZodLiteral<HookEventName.PostToolUse>;
@@ -88,10 +78,7 @@ const postToolUseHookInputShape: PostToolUseHookInputShape = {
   tool_response: ToolResponseSchema,
 };
 
-export const PostToolUseHookInputSchema: HookObjectSchema<
-  PostToolUseHookInputShape,
-  PostToolUseHookInput
-> =
+export const PostToolUseHookInputSchema: HookObjectSchema<PostToolUseHookInputShape> =
   z.object(postToolUseHookInputShape) satisfies z.ZodType<PostToolUseHookInput>;
 
 type NotificationHookInputShape = Omit<BaseHookInputShape, 'hook_event_name'> & {
@@ -107,10 +94,7 @@ const notificationHookInputShape: NotificationHookInputShape = {
   message: z.string(),
 };
 
-export const NotificationHookInputSchema: HookObjectSchema<
-  NotificationHookInputShape,
-  NotificationHookInput
-> =
+export const NotificationHookInputSchema: HookObjectSchema<NotificationHookInputShape> =
   z.object(notificationHookInputShape) satisfies z.ZodType<NotificationHookInput>;
 
 type StopHookInputShape = Omit<BaseHookInputShape, 'hook_event_name'> & {
@@ -124,10 +108,7 @@ const stopHookInputShape: StopHookInputShape = {
   stop_hook_active: z.boolean(),
 };
 
-export const StopHookInputSchema: HookObjectSchema<
-  StopHookInputShape,
-  StopHookInput
-> = z.object(stopHookInputShape) satisfies z.ZodType<StopHookInput>;
+export const StopHookInputSchema: HookObjectSchema<StopHookInputShape> = z.object(stopHookInputShape) satisfies z.ZodType<StopHookInput>;
 
 type SubagentStopHookInputShape = Omit<BaseHookInputShape, 'hook_event_name'> & {
   hook_event_name: z.ZodLiteral<HookEventName.SubagentStop>;
@@ -140,10 +121,7 @@ const subagentStopHookInputShape: SubagentStopHookInputShape = {
   stop_hook_active: z.boolean(),
 };
 
-export const SubagentStopHookInputSchema: HookObjectSchema<
-  SubagentStopHookInputShape,
-  SubagentStopHookInput
-> =
+export const SubagentStopHookInputSchema: HookObjectSchema<SubagentStopHookInputShape> =
   z.object(subagentStopHookInputShape) satisfies z.ZodType<SubagentStopHookInput>;
 
 type UserPromptSubmitHookInputShape = Omit<BaseHookInputShape, 'hook_event_name'> & {
@@ -159,10 +137,7 @@ const userPromptSubmitHookInputShape: UserPromptSubmitHookInputShape = {
   prompt: z.string(),
 };
 
-export const UserPromptSubmitHookInputSchema: HookObjectSchema<
-  UserPromptSubmitHookInputShape,
-  UserPromptSubmitHookInput
-> =
+export const UserPromptSubmitHookInputSchema: HookObjectSchema<UserPromptSubmitHookInputShape> =
   z.object(userPromptSubmitHookInputShape) satisfies z.ZodType<UserPromptSubmitHookInput>;
 
 type PreCompactHookInputShape = Omit<BaseHookInputShape, 'hook_event_name'> & {
@@ -178,59 +153,32 @@ const preCompactHookInputShape: PreCompactHookInputShape = {
   custom_instructions: z.string(),
 };
 
-export const PreCompactHookInputSchema: HookObjectSchema<
-  PreCompactHookInputShape,
-  PreCompactHookInput
-> = z.object(preCompactHookInputShape) satisfies z.ZodType<PreCompactHookInput>;
+export const PreCompactHookInputSchema: HookObjectSchema<PreCompactHookInputShape> = z.object(preCompactHookInputShape) satisfies z.ZodType<PreCompactHookInput>;
 
-type SessionStartHookInputShape = Omit<BaseHookInputShape, 'hook_event_name'> & {
-  hook_event_name: z.ZodLiteral<HookEventName.SessionStart>;
-  source: z.ZodEnum<['startup', 'resume', 'clear', 'compact']>;
-};
-
-const sessionStartHookInputShape: SessionStartHookInputShape = {
+/** @internal */
+const sessionStartHookInputShape = {
   ...baseHookInputShape,
   hook_event_name: z.literal(HookEventName.SessionStart),
   source: z.enum(['startup', 'resume', 'clear', 'compact']),
 };
 
-export const SessionStartHookInputSchema: HookObjectSchema<
-  SessionStartHookInputShape,
-  SessionStartHookInput
-> = z.object(sessionStartHookInputShape) satisfies z.ZodType<SessionStartHookInput>;
+type SessionStartHookInputShape = typeof sessionStartHookInputShape;
 
-type SessionEndHookInputShape = Omit<BaseHookInputShape, 'hook_event_name'> & {
-  hook_event_name: z.ZodLiteral<HookEventName.SessionEnd>;
-  cwd: z.ZodString;
-  reason: z.ZodEnum<['clear', 'logout', 'prompt_input_exit', 'other']>;
-};
+export const SessionStartHookInputSchema: HookObjectSchema<SessionStartHookInputShape> = z.object(sessionStartHookInputShape) satisfies z.ZodType<SessionStartHookInput>;
 
-const sessionEndHookInputShape: SessionEndHookInputShape = {
+/** @internal */
+const sessionEndHookInputShape = {
   ...baseHookInputShape,
   hook_event_name: z.literal(HookEventName.SessionEnd),
   cwd: z.string(),
   reason: z.enum(['clear', 'logout', 'prompt_input_exit', 'other']),
 };
 
-export const SessionEndHookInputSchema: HookObjectSchema<
-  SessionEndHookInputShape,
-  SessionEndHookInput
-> = z.object(sessionEndHookInputShape) satisfies z.ZodType<SessionEndHookInput>;
+type SessionEndHookInputShape = typeof sessionEndHookInputShape;
 
-export const HookInputSchema: z.ZodDiscriminatedUnion<
-  'hook_event_name',
-  [
-    HookObjectSchema<PreToolUseHookInputShape, PreToolUseHookInput>,
-    HookObjectSchema<PostToolUseHookInputShape, PostToolUseHookInput>,
-    HookObjectSchema<NotificationHookInputShape, NotificationHookInput>,
-    HookObjectSchema<StopHookInputShape, StopHookInput>,
-    HookObjectSchema<SubagentStopHookInputShape, SubagentStopHookInput>,
-    HookObjectSchema<UserPromptSubmitHookInputShape, UserPromptSubmitHookInput>,
-    HookObjectSchema<PreCompactHookInputShape, PreCompactHookInput>,
-    HookObjectSchema<SessionStartHookInputShape, SessionStartHookInput>,
-    HookObjectSchema<SessionEndHookInputShape, SessionEndHookInput>,
-  ]
-> =
+export const SessionEndHookInputSchema: HookObjectSchema<SessionEndHookInputShape> = z.object(sessionEndHookInputShape) satisfies z.ZodType<SessionEndHookInput>;
+
+export const HookInputSchema: z.ZodType<HookInput> =
   z.discriminatedUnion('hook_event_name', [
     PreToolUseHookInputSchema,
     PostToolUseHookInputSchema,
@@ -243,5 +191,5 @@ export const HookInputSchema: z.ZodDiscriminatedUnion<
     SessionEndHookInputSchema,
   ]) satisfies z.ZodType<HookInput>;
 
-export const HookEventNameSchema: z.ZodNativeEnum<typeof HookEventName> =
+export const HookEventNameSchema: z.ZodType<HookEventName> =
   z.nativeEnum(HookEventName) satisfies z.ZodType<HookEventName>;

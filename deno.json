@@ -8,7 +8,7 @@
     "./helpers": "./src/hooks/helpers.ts"
   },
   "imports": {
-    "zod": "npm:zod@^3.22.4"
+    "zod": "jsr:@zod/zod@^4.1.9"
   },
   "tasks": {
     "test": "deno test --allow-read --allow-env",

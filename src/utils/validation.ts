@@ -23,7 +23,7 @@ export interface ValidationResult<T> {
  */
 export function validateHookInput(input: unknown): ValidationResult<HookInput> {
   try {
-    const data = HookInputSchema.parse(input);
+    const data = HookInputSchema.parse(input) as HookInput;
     return { success: true, data };
   } catch (error) {
     if (error instanceof z.ZodError) {
