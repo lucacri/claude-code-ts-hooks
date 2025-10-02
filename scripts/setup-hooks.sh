@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Skip setup if this is installed as a dependency (in node_modules)
+# Only run for development installations
+if [[ "$PWD" == *"/node_modules/"* ]] || [[ "$PWD" == *"\\node_modules\\"* ]]; then
+  echo "⏭️  Skipping git hooks setup (installed as dependency)"
+  exit 0
+fi
+
 echo "🔧 Setting up Git hooks for claude-code-ts-hooks..."
 
 HOOKS_DIR=".git/hooks"
@@ -7,8 +14,8 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Check if we're in a git repository
 if [ ! -d ".git" ]; then
-  echo "❌ Error: Not in a git repository"
-  exit 1
+  echo "⏭️  Skipping git hooks setup (not in a git repository)"
+  exit 0
 fi
 
 # Create pre-commit hook

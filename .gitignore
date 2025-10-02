@@ -50,3 +50,4 @@ logs/
 .panda/workspace/temps/
 .panda/workspace/contexts/README.md
 .panda/workspace/command-notes/README.md
+.lucode.json
