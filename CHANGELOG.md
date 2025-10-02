@@ -1,3 +1,9 @@
+## [2.1.2](https://github.com/lucacri/claude-code-ts-hooks/compare/v2.1.1...v2.1.2) (2025-10-02)
+
+### Bug Fixes
+
+* use @rollup/wasm-node to avoid optional dependency issues in CI ([a0c17ef](https://github.com/lucacri/claude-code-ts-hooks/commit/a0c17efcf128fee04d043022a443332db31a0fc7))
+
 ## [2.1.1](https://github.com/lucacri/claude-code-ts-hooks/compare/v2.1.0...v2.1.1) (2025-10-02)
 
 ### Bug Fixes
