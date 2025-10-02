@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/lucacri/claude-code-ts-hooks/compare/v2.1.0...v2.1.1) (2025-10-02)
+
+### Bug Fixes
+
+* regenerate package-lock.json for CI dependency caching ([6f5a6ca](https://github.com/lucacri/claude-code-ts-hooks/commit/6f5a6ca32067d3027f3ecdd27f0f73f44d745256))
+* remove automatic git hooks installation during package install ([f8e4891](https://github.com/lucacri/claude-code-ts-hooks/commit/f8e4891e7924e1813ee54f598e65040c21405346))
+
 ## [2.1.0](https://github.com/lucacri/claude-code-ts-hooks/compare/v2.0.1...v2.1.0) (2025-10-01)
 
 ### Features
